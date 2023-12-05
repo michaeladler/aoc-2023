@@ -1,0 +1,19 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y meson ninja-build
+      - run: meson setup build --buildtype debugoptimized -Db_sanitize=address -Db_lundef=false
+      - run: ninja -C build test

@@ -1,0 +1,1 @@
+option('have-inputs', type : 'boolean', description : 'Enable tests using the real input files', value : false)
