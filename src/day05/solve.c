@@ -71,8 +71,8 @@ static inline i64 Recipe_lookup(Recipe *r, i64 number) {
 void solve(const char *buf, size_t buf_size, Solution *result) {
     u16 seeds_count = 0, recipe_count = 0;
     i64 seeds[32];
-    Recipe recipes[32];
-    Recipe inv_recipes[32];
+    Recipe recipes[32] = {0};
+    Recipe inv_recipes[32] = {0};
 
     size_t pos = 0;
     aoc_parse_seek(buf, &pos, ':');
@@ -157,7 +157,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
     // part 2
     Interval interval[32];
     size_t interval_count = 0;
-    for (int i = 0; i < seeds_count; i += 2) {
+    for (int i = 0; i + 1 < seeds_count; i += 2) {
         Interval inter = {.from = seeds[i], .to = seeds[i] + seeds[i + 1] - 1};
         interval[interval_count++] = inter;
     }
