@@ -179,8 +179,8 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         }
     }
 
-    stbsp_snprintf(result->part1, sizeof(result->part1), "%ld", part1);
-    stbsp_snprintf(result->part2, sizeof(result->part2), "%ld", part2);
+    aoc_itoa(part1, result->part1, 10);
+    aoc_itoa(part2, result->part2, 10);
 }
 
 int solve_input(const char *fname, Solution *result) {

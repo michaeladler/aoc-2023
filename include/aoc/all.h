@@ -24,4 +24,3 @@
 #include "aoc/types.h"
 
 #include "log.h"
-#include "stb_sprintf.h"

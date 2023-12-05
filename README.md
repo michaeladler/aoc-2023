@@ -54,7 +54,6 @@ Special thanks to the authors of these very useful C resources:
 - [C Algorithms](https://github.com/fragglet/c-algorithms) - A library of common data structures and algorithms written in C.
 - [CTL](https://github.com/glouw/ctl/) - A library for container types for C.
 - [CTest](https://github.com/bvdberg/ctest) - A unit testing framework for C.
-- [STB](https://github.com/nothings/stb) - Single-file public domain libraries for C/C++.
 - [Log.c](https://github.com/rxi/log.c) - A simple logging library implemented in C.
 - [Sort](https://github.com/swenson/sort/) - A collection of sorting algorithms implemented in C.
 - [str](https://github.com/maxim2266/str) - yet another string library for C language.

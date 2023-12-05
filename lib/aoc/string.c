@@ -15,10 +15,10 @@ void aoc_strreverse(char *begin, char *end) {
     while (end > begin) aux = *end, *end-- = *begin, *begin++ = aux;
 }
 
-size_t aoc_itoa(int value, char *str, int base) {
+size_t aoc_itoa(i64 value, char *out, int base) {
     static char num[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-    char *wstr = str;
+    char *wstr = out;
     int sign;
 
     // Validate base
@@ -33,6 +33,6 @@ size_t aoc_itoa(int value, char *str, int base) {
     if (sign < 0) *wstr++ = '-';
 
     *wstr = '\0';
-    aoc_strreverse(str, wstr - 1);
-    return wstr - str;
+    aoc_strreverse(out, wstr - 1);
+    return wstr - out;
 }

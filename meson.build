@@ -15,7 +15,7 @@ endif
 
 c = meson.get_compiler('c')
 
-inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/stb', 'vendor/log', 'vendor/str', 'vendor/hashmap']
+inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/log', 'vendor/str', 'vendor/hashmap']
 
 aoc_lib = static_library(
     'aoc_lib',
@@ -27,7 +27,6 @@ aoc_lib = static_library(
     'lib/aoc/parser.c',
     'lib/aoc/point.c',
     'lib/aoc/string.c',
-    'vendor/stb/stb_sprintf.c',
     include_directories: include_directories(inc_dirs)
 )
 
