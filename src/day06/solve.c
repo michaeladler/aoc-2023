@@ -8,26 +8,39 @@
 
 #include "solve.h"
 #include "aoc/all.h"
+#include <math.h>
 
 #define N 32
 
 static void extract_digits(i32 number, i64 out[], i32 *out_count) {
-    i32 idx = *out_count;
-
-    i32 tmp[32];
-    int tmp_idx = 0;
+    i32 idx = *out_count, tmp[32], tmp_idx = 0;
     while (number != 0) {
-        i32 dig = number % 10;
-        number = (number - dig) / 10;
-        tmp[tmp_idx++] = dig;
+        tmp[tmp_idx++] = number % 10;
+        number = number / 10;
     }
     for (int i = tmp_idx - 1; i >= 0; i--) { out[idx++] = tmp[i]; }
     *out_count = idx;
 }
 
-void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
-    i64 part1 = 1, part2 = 1;
+static inline i64 count_values(i64 time_avail, i64 record) {
+    // Find all integers v such that v * (time_avail - v) > record
+    double discriminant = time_avail * time_avail - 4 * record;
+    i64 l = (i64)floor((time_avail - sqrt(discriminant)) / 2);
+    i64 u = (i64)ceil((time_avail + sqrt(discriminant)) / 2);
 
+    // check if lower is ok
+    if (l * (time_avail - l) <= record) { // not ok
+        l++;
+    }
+
+    // check if upper is ok
+    if (u * (time_avail - u) <= record) { // not ok
+        u--;
+    }
+    return u - l + 1;
+}
+
+void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
     i32 time[N], record_dist[N];
     int n = 0;
 
@@ -47,15 +60,12 @@ void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
         }
     }
 
+    i64 part1 = 1, part2 = 1;
     // part 1
     for (int i = 0; i < n; i++) {
         i32 time_avail = time[i], record = record_dist[i];
-        i64 count = 0;
-        for (i32 wait = 1; wait < time_avail; wait++) {
-            i32 v = wait, t = time_avail - wait;
-            if (v * t > record) { count++; }
-        }
-        if (count > 0) { part1 *= count; }
+        i64 count = count_values(time_avail, record);
+        if (count > 0) part1 *= count;
     }
 
     // part 2
@@ -77,12 +87,8 @@ void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
         record = (record * 10) + record_digits[i];
     }
 
-    i64 count = 0;
-    for (i64 wait = 1; wait < time_avail; wait++) {
-        i64 v = wait, t = time_avail - wait;
-        if (v * t > record) { count++; }
-    }
-    if (count > 0) { part2 *= count; }
+    i64 count = count_values(time_avail, record);
+    if (count > 0) part2 *= count;
 
     aoc_itoa(part1, result->part1, 10);
     aoc_itoa(part2, result->part2, 10);
