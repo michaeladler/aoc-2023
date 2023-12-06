@@ -45,7 +45,7 @@ The solutions were tested on different processors using [hyperfine](https://gith
 | 3   | 259 µs          | 501 µs                |
 | 4   | 368 µs          | 679 µs                |
 | 5   | 1.4 s           | 2.6 s                 |
-| 6   | 273 µs          |                       |
+| 6   | 273 µs          | 472 µs                |
 
 ## 🙏 Acknowledgments and Resources
 
