@@ -17,15 +17,15 @@ Distance:  9  40  200\n";
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("288", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    ASSERT_STR("71503", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
-CTEST_SKIP(day06, real) {
+CTEST(day06, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
-    ASSERT_STR("0", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    ASSERT_STR("741000", solution.part1);
+    ASSERT_STR("38220708", solution.part2);
 }
 #endif
 
