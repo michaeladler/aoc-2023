@@ -4,7 +4,7 @@ _default:
     just --list
 
 watch:
-    fd ".*c$" -t f | entr ninja -C build_debug test
+    fd ".*c$" -t f | entr ninja -C build test
 
 generate DAY:
     #!/usr/bin/env bash
