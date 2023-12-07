@@ -24,6 +24,16 @@ generate DAY:
 submit DAY PART ANSWER:
     aoc submit --year {{ YEAR }} --day {{ DAY }} {{ PART }} {{ ANSWER }}
 
+test:
+    ninja -C build test
+
+test-latest:
+    #!/usr/bin/env bash
+    ninja --quiet -C build
+    EXE=$(find build -name "day*_test" -type f -executable | sort -n | tail -n1)
+    echo "Running $EXE"
+    exec "$EXE"
+
 download-puzzle DAY:
     #!/usr/bin/env bash
     set -eu
