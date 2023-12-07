@@ -36,17 +36,19 @@ ninja -C build_debug test
 
 ## ⏱ Performance Benchmarks
 
-The solutions were tested on different processors using [hyperfine](https://github.com/sharkdp/hyperfine) and/or [poop](https://github.com/andrewrk/poop):
+The solutions were tested on different processors using [hyperfine](https://github.com/sharkdp/hyperfine) and/or [poop](https://github.com/andrewrk/poop).
+Compiled using clang 16 and LTO.
+
 
 | Day | Intel i7-11850H | AMD Ryzen 5 PRO 4650U |
 | --- | --------------- | --------------------- |
-| 1   | 370 µs          | 520 µs                |
+| 1   | 276 µs          | 520 µs                |
 | 2   | 185 µs          | 434 µs                |
-| 3   | 259 µs          | 501 µs                |
+| 3   | 231 µs          | 501 µs                |
 | 4   | 368 µs          | 679 µs                |
 | 5   | 1.4 s           | 2.6 s                 |
-| 6   | 273 µs          | 472 µs                |
-| 7   | 4.4 ms          |                       |
+| 6   | 200 µs          | 472 µs                |
+| 7   | 2.6 ms          |                       |
 
 ## 🙏 Acknowledgments and Resources
 
