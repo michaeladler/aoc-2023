@@ -1,3 +1,11 @@
+/*
+ * Author: Michael Adler
+ *
+ * Copyright: 2023 Michael Adler
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #pragma once
 
 #include "aoc/types.h"
@@ -19,8 +27,3 @@ typedef enum {
     FOUR_KIND,
     FIVE_KIND
 } hand_strength;
-
-hand_strength Hand_compute_strength(Hand h);
-
-// forward decl
-void Hand_tim_sort(Hand *dst, const size_t size);

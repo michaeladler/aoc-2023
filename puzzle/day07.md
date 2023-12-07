@@ -59,8 +59,6 @@ Find the rank of every hand in your set. What are the total winnings?
 
 Your puzzle answer was 253910319.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 
 To make things a little more interesting, the Elf introduces one additional rule. Now, J cards are jokers - wildcards that can act like whatever card would make the hand the strongest type possible.
@@ -85,9 +83,13 @@ With the new joker rule, the total winnings in this example are 5905.
 
 Using the new joker rule, find the rank of every hand in your set. What are the new total winnings?
 
-Answer:
+Your puzzle answer was 254083736.
 
-Although it hasn't changed, you can still get your puzzle input.
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.
 
 You can also [Shareon Twitter Mastodon] this puzzle.
 

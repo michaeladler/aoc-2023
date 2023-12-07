@@ -1,3 +1,11 @@
+/*
+ * Author: Michael Adler
+ *
+ * Copyright: 2023 Michael Adler
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -70,7 +78,6 @@ hand_strength Hand_compute_strength(Hand h) {
 
 // return GT if x > y
 static inline int Hand_compare(Hand x, Hand y) {
-
     hand_strength x_strength = Hand_compute_strength(x);
     hand_strength y_strength = Hand_compute_strength(y);
 

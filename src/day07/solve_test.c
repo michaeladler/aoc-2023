@@ -20,7 +20,7 @@ QQQJA 483\n";
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("6440", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    ASSERT_STR("5905", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
@@ -28,7 +28,7 @@ CTEST(day07, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("253910319", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("254083736", solution.part2);
 }
 #endif
 

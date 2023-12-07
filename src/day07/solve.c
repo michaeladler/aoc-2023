@@ -9,17 +9,17 @@
 #include "solve.h"
 #include "aoc/all.h"
 
-#include "hand.h"
-
-#define MAX_HANDS 1000
+#include "part1.h"
+#include "part2.h"
 
 void solve(const char *buf, size_t buf_size, Solution *result) {
     i64 part1 = 0, part2 = 0;
     size_t pos = 0;
 
-    Hand hand[MAX_HANDS];
+    Hand hand[1000];
     size_t hand_count = 0;
 
+    // parser
     while (pos < buf_size) {
         for (int i = 0; i < CARDS_PER_HAND; i++) {
             hand[hand_count].cards[i] = buf[pos++];
@@ -29,13 +29,18 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         pos++; // newline
     }
 
+    // part 1
     Hand_tim_sort(hand, hand_count); // weakest hand is first
-
     for (size_t i = 0; i < hand_count; i++) {
-        log_debug("%.*s %d", 5, hand[i].cards, Hand_compute_strength(hand[i]));
-        // Each hand wins an amount equal to its bid multiplied by its rank
         i64 rank = i + 1, bid = hand[i].bid;
         part1 += rank * bid;
+    }
+
+    // part 2
+    Hand_part2_tim_sort(hand, hand_count);
+    for (size_t i = 0; i < hand_count; i++) {
+        i64 rank = i + 1, bid = hand[i].bid;
+        part2 += rank * bid;
     }
 
     aoc_itoa(part1, result->part1, 10);
