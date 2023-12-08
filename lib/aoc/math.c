@@ -13,9 +13,9 @@
 #include "aoc/math.h"
 #include "aoc/string.h"
 
-int aoc_gcdx(int a, int b, int *s, int *t) {
-    int s0 = 1, s1 = 0, t0 = 0, t1 = 1;
-    int q, r, m, n;
+i64 aoc_gcdx(i64 a, i64 b, i64 *s, i64 *t) {
+    i64 s0 = 1, s1 = 0, t0 = 0, t1 = 1;
+    i64 q, r, m, n;
 
     while (a) {
         q = b / a;
@@ -33,23 +33,33 @@ int aoc_gcdx(int a, int b, int *s, int *t) {
         t1 = n;
     }
 
-    *s = s0;
-    *t = t0;
+    if (s != NULL) *s = s0;
+    if (t != NULL) *t = t0;
 
     return b;
 }
 
-int aoc_fastmod(int n, int mod) {
-    n -= mod & -(n >= mod);
-    return n;
+i64 aoc_lcm(i64 a, i64 b) {
+    i64 gcd = aoc_gcdx(a, b, NULL, NULL);
+    return (a / gcd) * b;
 }
 
-int aoc_modinv(int b, int mod) {
-    int x, y;
-    aoc_gcdx(b, mod, &x, &y);
-    x += mod & -(x < 0);
+i64 aoc_lcm_many(i64 arr[], size_t n) {
+    i64 ans = arr[0];
+    for (size_t i = 1; i < n; i++) { ans = aoc_lcm(ans, arr[i]); }
+    return ans;
+}
+
+i64 aoc_fastmod(i64 a, i64 m) {
+    a -= m & -(a >= m);
+    return a;
+}
+
+i64 aoc_modinv(i64 a, i64 m) {
+    i64 x, y;
+    aoc_gcdx(a, m, &x, &y);
+    x += m & -(x < 0);
     return x;
 }
 
-// implements signum (-1, 0, or 1).
-int aoc_sgn(int val) { return (0 < val) - (val < 0); }
+i64 aoc_sgn(i64 val) { return (0 < val) - (val < 0); }

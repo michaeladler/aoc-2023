@@ -10,6 +10,8 @@
 
 #include <stddef.h>
 
+#include "aoc/types.h"
+
 /**
  * Calculate the greatest common divisor (GCD) of two integers 'a' and 'b'
  * using the extended Euclidean algorithm. Additionally, compute the Bézout
@@ -26,28 +28,38 @@
  * @param t Pointer to an integer to store the Bézout coefficient 't'
  * @return The greatest common divisor (GCD) of 'a' and 'b'
  */
-int aoc_gcdx(int a, int b, int *x, int *y);
+i64 aoc_gcdx(i64 a, i64 b, i64 *s, i64 *t);
 
 /**
- * Calculate the modular residue of an integer 'n' modulo 'mod' using
+ * Calculate the lowest common multiple (LCM) of two integers 'a' and 'b'.
+ */
+i64 aoc_lcm(i64 a, i64 b);
+
+/**
+ * Calculate the lowest common multiple (LCM) of an array of integers.
+ */
+i64 aoc_lcm_many(i64 arr[], size_t n);
+
+/**
+ * Calculate the modular residue of an integer 'a' modulo 'm' using
  * a faster computation technique suitable for positive integers.
  *
- * @param n The integer to compute the modular residue for
- * @param mod The modulus value
- * @return The modular residue of 'n' modulo 'mod'
+ * @param a The integer to compute the modular residue for
+ * @param m The modulus value
+ * @return The modular residue of 'a' modulo 'm'
  */
-int aoc_fastmod(int n, int mod);
+i64 aoc_fastmod(i64 a, i64 m);
 
 /**
- * Calculate the modular multiplicative inverse of an integer 'b' modulo 'mod'.
- * The function finds an integer 'x' such that (b * x) % mod == 1.
+ * Calculate the modular multiplicative inverse of an integer 'a' modulo 'm'.
+ * The function finds an integer 'x' such that (a * x) % m == 1.
  *
- * @param b The integer for which to find the modular inverse
- * @param mod The modulus value
- * @return The modular multiplicative inverse of 'b' modulo 'mod', or -1 if no
- *         inverse exists (when 'b' and 'mod' are not coprime).
+ * @param a The integer for which to find the modular inverse
+ * @param m The modulus value
+ * @return The modular multiplicative inverse of 'a' modulo 'm', or -1 if no
+ *         inverse exists (when 'a' and 'm' are not coprime).
  */
-int aoc_modinv(int b, int mod);
+i64 aoc_modinv(i64 a, i64 m);
 
 /**
  * Determine the sign of an integer 'val'.
@@ -57,4 +69,4 @@ int aoc_modinv(int b, int mod);
  *         -1 if 'val' is negative,
  *          0 if 'val' is zero.
  */
-int aoc_sgn(int val);
+i64 aoc_sgn(i64 val);

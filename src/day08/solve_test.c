@@ -24,7 +24,7 @@ ZZZ = (ZZZ, ZZZ)\n";
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("2", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("2", solution.part2);
 }
 
 CTEST(day08, example2) {
@@ -36,7 +36,7 @@ ZZZ = (ZZZ, ZZZ)\n";
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("6", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("6", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
@@ -44,7 +44,7 @@ CTEST(day08, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("16897", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("16563603485021", solution.part2);
 }
 #endif
 
