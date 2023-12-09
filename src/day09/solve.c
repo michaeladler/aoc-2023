@@ -15,7 +15,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
     i64 part1 = 0, part2 = 0;
     size_t pos = 0;
 
-    int history_id = 0;
+    const size_t base_idx = 1;
     while (pos < buf_size) {
         i64 differences[MAX_HISTORY][MAX_HISTORY] = {0};
         size_t history_count = 0;
@@ -23,11 +23,10 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         bool ok;
         i64 tmp;
         while ((ok = aoc_parse_integer(buf, &pos, &tmp)) == true) {
-            differences[0][history_count++] = tmp;
+            differences[0][base_idx + history_count] = tmp;
+            history_count++;
         }
         pos++; // newline
-
-        log_debug("%d: processing history", history_id);
 
         {
             // compute difference sequences
@@ -36,10 +35,10 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
                 bool all_zero = true;
                 // there are history_count - depth items at depth
                 for (size_t i = 0; i < history_count - depth; i++) {
-                    i64 value = differences[depth - 1][i + 1] -
-                                differences[depth - 1][i];
+                    i64 value = differences[depth - 1][base_idx + i + 1] -
+                                differences[depth - 1][base_idx + i];
                     if (value != 0) all_zero = false;
-                    differences[depth][i] = value;
+                    differences[depth][base_idx + i] = value;
                 }
                 if (all_zero) { break; }
                 depth++;
@@ -50,16 +49,15 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
             do {
                 depth--;
                 size_t idx = history_count - depth; // position of item to add
-                i64 value = differences[depth][idx - 1] +
-                            differences[depth + 1][idx - 1];
+                i64 value = differences[depth][base_idx + idx - 1] +
+                            differences[depth + 1][base_idx + idx - 1];
                 log_debug("depth %ld: adding item %ld in pos %ld", depth, value,
                           idx);
-                differences[depth][idx] = value;
+                differences[depth][base_idx + idx] = value;
             } while (depth != 0);
 
-            part1 += differences[0][history_count];
+            part1 += differences[0][base_idx + history_count];
         }
-        history_id++;
     }
 
     aoc_itoa(part1, result->part1, 10);
