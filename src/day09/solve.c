@@ -45,18 +45,22 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
             }
             log_debug("all zero at depth %ld", depth);
 
-            // compute next value in sequence (bubble up)
+            // compute prev and next value in sequence (bubble up)
             do {
                 depth--;
                 size_t idx = history_count - depth; // position of item to add
                 i64 value = differences[depth][base_idx + idx - 1] +
                             differences[depth + 1][base_idx + idx - 1];
-                log_debug("depth %ld: adding item %ld in pos %ld", depth, value,
-                          idx);
                 differences[depth][base_idx + idx] = value;
+
+                value = differences[depth][base_idx] -
+                        differences[depth + 1][base_idx - 1];
+                differences[depth][base_idx - 1] = value;
+
             } while (depth != 0);
 
             part1 += differences[0][base_idx + history_count];
+            part2 += differences[0][base_idx - 1];
         }
     }
 

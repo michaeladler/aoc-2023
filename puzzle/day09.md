@@ -79,8 +79,6 @@ Analyze your OASIS report and extrapolate the next value for each history. What 
 
 Your puzzle answer was 1882395907.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 
 Of course, it would be nice to have even more history included in your report. Surely it's safe to just extrapolate backwards as well, right?
@@ -102,9 +100,13 @@ Doing this for the remaining example data above results in previous values of -3
 
 Analyze your OASIS report again, this time extrapolating the previous value for each history. What is the sum of these extrapolated values?
 
-Answer:
+Your puzzle answer was 1005.
 
-Although it hasn't changed, you can still get your puzzle input.
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.
 
 You can also [Shareon Twitter Mastodon] this puzzle.
 
