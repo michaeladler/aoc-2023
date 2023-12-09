@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -35,6 +36,22 @@ i64 aoc_parse_nonnegative(const char *buf, size_t *pos) {
     }
     *pos = i;
     return result;
+}
+
+bool aoc_parse_integer(const char *buf, size_t *pos, i64 *out) {
+    aoc_parse_skip_ws(buf, pos);
+    if (buf[*pos] == '-') {
+        *pos = *pos + 1;
+        i64 value = aoc_parse_nonnegative(buf, pos);
+        if (value < 0) { return false; }
+        *out = 0 - value;
+        return true;
+    }
+    if (buf[*pos] == '+') { *pos = *pos + 1; }
+    i64 value = aoc_parse_nonnegative(buf, pos);
+    if (value < 0) { return false; }
+    *out = value;
+    return true;
 }
 
 void aoc_parse_seek(const char *buf, size_t *pos, char needle) {

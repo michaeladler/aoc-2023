@@ -9,6 +9,7 @@
 #pragma once
 
 #include "aoc/types.h"
+#include <stdbool.h>
 #include <stddef.h>
 
 /**
@@ -33,6 +34,31 @@
  * error.
  */
 i64 aoc_parse_nonnegative(const char *buf, size_t *pos);
+
+/**
+ * Attempts to parse an integer from a given character buffer and stores the
+ * result in an output parameter.
+ *
+ * This function scans the buffer pointed to by `buf` for an integer value,
+ * starting from the current position indicated by `pos`. It interprets and
+ * converts a sequence of characters representing a numerical value into an
+ * integer (of type i64), and stores the result in the variable pointed to by
+ * `out`. The position index pointed to by `pos` is updated to reflect the new
+ * position in the buffer after parsing.
+ *
+ * @param buf A pointer to the character buffer from which the integer is to be
+ * parsed.
+ * @param pos A pointer to a size_t variable indicating the current position in
+ * the buffer. After the function call, it will be updated to the position
+ * following the parsed integer.
+ * @param out A pointer to an i64 variable where the parsed integer value will
+ * be stored.
+ *
+ * @return A boolean value. Returns true if an integer is successfully parsed
+ * and stored in `out`, false otherwise. If false is returned, the contents of
+ * `out` and the value at `pos` are indeterminate.
+ */
+bool aoc_parse_integer(const char *buf, size_t *pos, i64 *out);
 
 /**
  * Skips over any whitespace characters in the buffer starting from the position
