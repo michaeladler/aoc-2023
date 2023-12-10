@@ -63,4 +63,3 @@ Special thanks to the authors of these very useful C resources:
 - [Log.c](https://github.com/rxi/log.c) - A simple logging library implemented in C.
 - [Sort](https://github.com/swenson/sort/) - A collection of sorting algorithms implemented in C.
 - [str](https://github.com/maxim2266/str) - yet another string library for C language.
-- [hashmap.c](https://github.com/tidwall/hashmap.c) - Hash map implementation in C.

@@ -15,7 +15,7 @@ endif
 
 c = meson.get_compiler('c')
 
-inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/log', 'vendor/str', 'vendor/hashmap']
+inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/log', 'vendor/str']
 
 m_dep = c.find_library('m', required : false)
 
@@ -23,7 +23,6 @@ aoc_lib = static_library(
     'aoc_lib',
     'vendor/str/str.c',
     'vendor/log/log.c',
-    'vendor/hashmap/hashmap.c',
     'lib/aoc/io.c',
     'lib/aoc/math.c',
     'lib/aoc/parser.c',
@@ -42,6 +41,7 @@ days = {
   'day07': [ 'src/day07/solve.c', 'src/day07/part1.c', 'src/day07/part2.c' ],
   'day08': [ 'src/day08/solve.c' ],
   'day09': [ 'src/day09/solve.c' ],
+  'day10': [ 'src/day10/solve.c' ],
   # XXX: marker
 }
 
