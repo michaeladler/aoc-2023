@@ -138,7 +138,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
     const char candidates[] = {
         '|', '-', 'L', 'J', '7', 'F',
     };
-
+    char start_char = '\0';
     for (size_t start_idx = 0; start_idx < ARRAY_LENGTH(candidates);
          start_idx++) {
         grid.cells[s.y][s.x] = candidates[start_idx];
@@ -161,47 +161,43 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         while (!deq_QueueEntry_empty(&queue)) {
             QueueEntry current = *deq_QueueEntry_back(&queue);
             deq_QueueEntry_pop_back(&queue);
-            log_debug(">> visiting (%d, %d): %c, depth %d", current.p.x,
-                      current.p.y, grid.cells[current.p.y][current.p.x],
-                      current.dist);
             for (int i = 0; i < find_neighbors(grid, current.p, neighbor);
                  i++) {
                 Point2D p = neighbor[i];
-                log_debug("checking neighbor (%d, %d): %c", p.x, p.y,
-                          grid.cells[p.y][p.x]);
                 if (seen[p.y][p.x] == 0) {
-                    log_debug("not seen before, adding neighbor to queue");
                     seen[p.y][p.x]++;
 
                     // parent of p is current
                     Entry entry = {.key = p, .value = current.p};
-                    log_debug("parent of (%d, %d) is (%d, %d)", p.x, p.y,
-                              current.p.x, current.p.y);
                     ust_Entry_insert(&parent_map, entry);
 
                     QueueEntry qentry = {.p = p, .dist = current.dist + 1};
                     deq_QueueEntry_push_back(&queue, qentry);
                 } else {
-                    //  a node that has already been visited and is not the
-                    //  parent of the current node, a cycle is detected.
-                    log_debug("seen before. looking up parent of (%d, %d)", p.x,
-                              p.y);
+                    // if a node has already been visited and is not the
+                    // parent of the current node, a cycle is detected.
                     ust_Entry_node *node =
                         ust_Entry_find(&parent_map, (Entry){.key = p});
                     if (node && !Point2D_equal(&node->key.value, &current.p)) {
                         Point2D parent = node->key.value;
                         if (Point2D_equal(&s, &parent)) {
-                            int cycle_len = current.dist + 1;
-                            log_debug(
-                                "*********** found cycle of length %d to start",
-                                cycle_len);
-                            part1 = MAX(part1, (cycle_len + 1) / 2);
+                            int cycle_len = 1 + (current.dist / 2);
+                            log_debug("found cycle to start: %d", cycle_len);
+                            if (cycle_len > 2) {
+                                part1 = cycle_len;
+                                start_char = candidates[start_idx];
+                                goto dfs_done;
+                            }
                         }
                     }
                 }
             }
         }
     }
+dfs_done:
+
+    // part 2
+    grid.cells[s.y][s.x] = start_char;
 
     aoc_itoa(part1, result->part1, 10);
     aoc_itoa(part2, result->part2, 10);
