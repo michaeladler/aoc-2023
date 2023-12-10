@@ -1,6 +1,7 @@
 ---
 # http://clang.llvm.org/docs/ClangFormatStyleOptions.html
 BasedOnStyle: LLVM
+ColumnLimit: 120
 IndentWidth: 4
 UseTab: Never
 BreakBeforeBraces: Attach
