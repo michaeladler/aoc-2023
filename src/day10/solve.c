@@ -23,9 +23,7 @@ typedef struct {
     Point2D value;
 } Entry;
 
-static int Entry_equal(Entry *lhs, Entry *rhs) {
-    return Point2D_equal(&lhs->key, &rhs->key);
-}
+static int Entry_equal(Entry *lhs, Entry *rhs) { return Point2D_equal(&lhs->key, &rhs->key); }
 
 static size_t Entry_hash(Entry *e) { return Point2D_hash(&e->key); }
 
@@ -41,37 +39,37 @@ typedef struct {
     int cols;
 } Grid;
 
-#define MOVE_NORTH(p, out, count)                                              \
-    do {                                                                       \
-        if ((p).y - 1 >= 0) {                                                  \
-            (out)[(count)].x = (p).x;                                          \
-            (out)[(count)].y = (p).y - 1;                                      \
-            (count)++;                                                         \
-        }                                                                      \
+#define MOVE_NORTH(p, out, count)                                                                                      \
+    do {                                                                                                               \
+        if ((p).y - 1 >= 0) {                                                                                          \
+            (out)[(count)].x = (p).x;                                                                                  \
+            (out)[(count)].y = (p).y - 1;                                                                              \
+            (count)++;                                                                                                 \
+        }                                                                                                              \
     } while (0)
-#define MOVE_SOUTH(p, out, count)                                              \
-    do {                                                                       \
-        if ((p).y + 1 < grid.rows) {                                           \
-            (out)[(count)].x = (p).x;                                          \
-            (out)[(count)].y = (p).y + 1;                                      \
-            (count)++;                                                         \
-        }                                                                      \
+#define MOVE_SOUTH(p, out, count)                                                                                      \
+    do {                                                                                                               \
+        if ((p).y + 1 < grid.rows) {                                                                                   \
+            (out)[(count)].x = (p).x;                                                                                  \
+            (out)[(count)].y = (p).y + 1;                                                                              \
+            (count)++;                                                                                                 \
+        }                                                                                                              \
     } while (0)
-#define MOVE_WEST(p, out, count)                                               \
-    do {                                                                       \
-        if ((p).x - 1 >= 0) {                                                  \
-            (out)[(count)].x = (p).x - 1;                                      \
-            (out)[(count)].y = (p).y;                                          \
-            (count)++;                                                         \
-        }                                                                      \
+#define MOVE_WEST(p, out, count)                                                                                       \
+    do {                                                                                                               \
+        if ((p).x - 1 >= 0) {                                                                                          \
+            (out)[(count)].x = (p).x - 1;                                                                              \
+            (out)[(count)].y = (p).y;                                                                                  \
+            (count)++;                                                                                                 \
+        }                                                                                                              \
     } while (0)
-#define MOVE_EAST(p, out, count)                                               \
-    do {                                                                       \
-        if ((p).x + 1 < grid.cols) {                                           \
-            (out)[(count)].x = (p).x + 1;                                      \
-            (out)[(count)].y = (p).y;                                          \
-            (count)++;                                                         \
-        }                                                                      \
+#define MOVE_EAST(p, out, count)                                                                                       \
+    do {                                                                                                               \
+        if ((p).x + 1 < grid.cols) {                                                                                   \
+            (out)[(count)].x = (p).x + 1;                                                                              \
+            (out)[(count)].y = (p).y;                                                                                  \
+            (count)++;                                                                                                 \
+        }                                                                                                              \
     } while (0)
 
 static inline int find_neighbors(Grid grid, Point2D p, Point2D out[2]) {
@@ -139,30 +137,30 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         '|', '-', 'L', 'J', '7', 'F',
     };
     char start_char = '\0';
-    for (size_t start_idx = 0; start_idx < ARRAY_LENGTH(candidates);
-         start_idx++) {
+
+    Point2D loop[1 << 14];
+    int loop_count = 0;
+
+    for (size_t start_idx = 0; start_idx < ARRAY_LENGTH(candidates); start_idx++) {
         grid.cells[s.y][s.x] = candidates[start_idx];
 
         // dfs
         i8 seen[MAX_GRID_SIZE][MAX_GRID_SIZE] = {0};
         seen[s.y][s.x]++;
 
-        _cleanup_(deq_QueueEntry_free) deq_QueueEntry queue =
-            deq_QueueEntry_init();
+        _cleanup_(deq_QueueEntry_free) deq_QueueEntry queue = deq_QueueEntry_init();
         {
             QueueEntry entry = {.p = s, .dist = 0};
             deq_QueueEntry_push_back(&queue, entry);
         }
 
-        _cleanup_(ust_Entry_free) ust_Entry parent_map =
-            ust_Entry_init(Entry_hash, Entry_equal);
+        _cleanup_(ust_Entry_free) ust_Entry parent_map = ust_Entry_init(Entry_hash, Entry_equal);
 
         Point2D neighbor[2];
         while (!deq_QueueEntry_empty(&queue)) {
             QueueEntry current = *deq_QueueEntry_back(&queue);
             deq_QueueEntry_pop_back(&queue);
-            for (int i = 0; i < find_neighbors(grid, current.p, neighbor);
-                 i++) {
+            for (int i = 0; i < find_neighbors(grid, current.p, neighbor); i++) {
                 Point2D p = neighbor[i];
                 if (seen[p.y][p.x] == 0) {
                     seen[p.y][p.x]++;
@@ -176,16 +174,27 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
                 } else {
                     // if a node has already been visited and is not the
                     // parent of the current node, a cycle is detected.
-                    ust_Entry_node *node =
-                        ust_Entry_find(&parent_map, (Entry){.key = p});
+                    ust_Entry_node *node = ust_Entry_find(&parent_map, (Entry){.key = p});
                     if (node && !Point2D_equal(&node->key.value, &current.p)) {
                         Point2D parent = node->key.value;
                         if (Point2D_equal(&s, &parent)) {
                             int cycle_len = 1 + (current.dist / 2);
                             log_debug("found cycle to start: %d", cycle_len);
                             if (cycle_len > 2) {
-                                part1 = cycle_len;
                                 start_char = candidates[start_idx];
+
+                                Point2D tmp = current.p;
+                                while ((node = ust_Entry_find(&parent_map, (Entry){.key = tmp})) != NULL) {
+                                    loop[loop_count++] = node->key.key;
+                                    tmp = node->key.value;
+                                }
+
+                                tmp = p;
+                                while ((node = ust_Entry_find(&parent_map, (Entry){.key = tmp})) != NULL) {
+                                    loop[loop_count++] = node->key.key;
+                                    tmp = node->key.value;
+                                }
+
                                 goto dfs_done;
                             }
                         }
@@ -196,8 +205,46 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
     }
 dfs_done:
 
+    part1 = (loop_count + 1) / 2;
+
     // part 2
-    grid.cells[s.y][s.x] = start_char;
+    Grid new_grid;
+    new_grid.rows = grid.rows;
+    new_grid.cols = grid.cols;
+    memset(new_grid.cells, '.', grid.rows * grid.cols);
+    for (int i = 0; i < loop_count; i++) {
+        Point2D p = loop[i];
+        new_grid.cells[p.y][p.x] = grid.cells[p.y][p.x];
+    }
+    new_grid.cells[s.y][s.x] = start_char;
+
+    // use the Even-odd algorithm, see https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
+    char corner[1024];
+    for (int y = 0; y < new_grid.rows; y++) {
+        for (int x = 0; x < new_grid.cols; x++) {
+            char c = new_grid.cells[y][x];
+            if (c != '.') continue;
+
+            int intersection_count = 0;
+            int corner_count = 0;
+            for (int i = x + 1; i < new_grid.cols; i++) { // walk east
+                char c_east = new_grid.cells[y][i];
+                if (c_east == '|') {
+                    intersection_count++;
+                } else if (c_east == 'F' || c_east == 'L') {
+                    corner[corner_count++] = c_east;
+                } else if (corner_count > 0 && ((c_east == 'J' && corner[corner_count - 1] == 'F') ||
+                                                (c_east == '7' && corner[corner_count - 1] == 'L'))) {
+                    corner_count--;
+                    intersection_count++;
+                }
+            }
+
+            if (intersection_count % 2 == 1) {
+                part2 += 1; // inner point
+            }
+        }
+    }
 
     aoc_itoa(part1, result->part1, 10);
     aoc_itoa(part2, result->part2, 10);
