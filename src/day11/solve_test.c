@@ -25,15 +25,14 @@ CTEST(day11, example) {
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("374", solution.part1);
-    // ASSERT_STR("0", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
-CTEST_SKIP(day11, real) {
+CTEST(day11, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("9274989", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("357134560737", solution.part2);
 }
 #endif
 

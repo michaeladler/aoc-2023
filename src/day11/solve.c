@@ -11,7 +11,10 @@
 
 #define MAX_POINTS 1024
 
+static const i64 expand_p2 = 1000000 - 1;
+
 void solve(const char *buf, size_t buf_size, Solution *result) {
+
     i64 part1 = 0, part2 = 0;
     size_t pos = 0;
 
@@ -58,29 +61,38 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         Point2D a = point[i];
         for (int j = i + 1; j < point_count; j++) {
             Point2D b = point[j];
-            i32 dist = Point2D_manhattan(a, b);
+            i64 p1_dist = Point2D_manhattan(a, b);
+            i64 p2_dist = p1_dist;
 
             { // account for empty cols
-                i32 count = 0;
-                i32 lower_x = MIN(a.x, b.x);
-                i32 upper_x = MAX(a.x, b.x);
+                i64 p1_count = 0, p2_count = 0;
+                i32 lower_x = MIN(a.x, b.x), upper_x = MAX(a.x, b.x);
                 for (i32 k = 0; k < empty_col_count; k++) {
                     i32 c = empty_col[k];
-                    if (c > lower_x && c < upper_x) count++;
+                    if (c > lower_x && c < upper_x) {
+                        p1_count++;
+                        p2_count += expand_p2;
+                    }
                 }
-                dist += count;
+                p1_dist += p1_count;
+                p2_dist += p2_count;
             }
             { // account for empty rows
-                i32 count = 0;
+                i64 p1_count = 0, p2_count = 0;
                 i32 lower_y = MIN(a.y, b.y);
                 i32 upper_y = MAX(a.y, b.y);
                 for (i32 k = 0; k < empty_row_count; k++) {
                     i32 r = empty_row[k];
-                    if (r > lower_y && r < upper_y) count++;
+                    if (r > lower_y && r < upper_y) {
+                        p1_count++;
+                        p2_count += expand_p2;
+                    }
                 }
-                dist += count;
+                p1_dist += p1_count;
+                p2_dist += p2_count;
             }
-            part1 += dist;
+            part1 += p1_dist;
+            part2 += p2_dist;
         }
     }
 
