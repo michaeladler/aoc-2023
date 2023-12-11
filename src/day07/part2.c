@@ -35,18 +35,14 @@ static inline int card_strength_part2(char c) {
 static inline int break_tie_part2(Hand x, Hand y) {
     for (int i = 0; i < CARDS_PER_HAND; i++) {
         char lhs = x.cards[i], rhs = y.cards[i];
-        if (lhs != rhs) {
-            return card_strength_part2(lhs) < card_strength_part2(rhs) ? LT
-                                                                       : GT;
-        }
+        if (lhs != rhs) { return card_strength_part2(lhs) < card_strength_part2(rhs) ? LT : GT; }
     }
     return EQ;
 }
 
 hand_strength Hand_compute_strength_part2(Hand h) {
     // all possible values a Joker can take on
-    static char joker_values[] = {'A', 'K', 'Q', 'T', '9', '8',
-                                  '7', '6', '5', '4', '3', '2'};
+    static char joker_values[] = {'A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2'};
 
     int joker_idx[CARDS_PER_HAND];
     int joker_count = 0;

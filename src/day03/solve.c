@@ -19,17 +19,11 @@ typedef struct {
     char value;
 } Symbol;
 
-static inline bool is_symbol(char s) {
-    return !(s >= '0' && s <= '9') && s != '.';
-}
+static inline bool is_symbol(char s) { return !(s >= '0' && s <= '9') && s != '.'; }
 
-static inline int collect(int8_t numbers[MAX_NUMBERS][MAX_NUMBERS], int cols,
-                          int candidate_x, int candidate_y) {
+static inline int collect(int8_t numbers[MAX_NUMBERS][MAX_NUMBERS], int cols, int candidate_x, int candidate_y) {
     // go left as far as possible to find start digit
-    while (candidate_x - 1 >= 0 &&
-           numbers[candidate_y][candidate_x - 1] != EMPTY) {
-        candidate_x--;
-    }
+    while (candidate_x - 1 >= 0 && numbers[candidate_y][candidate_x - 1] != EMPTY) { candidate_x--; }
     int value = numbers[candidate_y][candidate_x];
     // reset to prevent collecting twice
     numbers[candidate_y][candidate_x] = EMPTY;
@@ -77,16 +71,13 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         int values[8];
         int value_idx = 0;
 
-        Point2D deltas[] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0},
-                            {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
+        Point2D deltas[] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
 
         for (size_t i = 0; i < ARRAY_LENGTH(deltas); i++) {
             int candidate_x = x + deltas[i].x, candidate_y = y + deltas[i].y;
-            if (candidate_x >= 0 && candidate_y >= 0 && candidate_x < cols &&
-                candidate_y < rows &&
+            if (candidate_x >= 0 && candidate_y >= 0 && candidate_x < cols && candidate_y < rows &&
                 numbers[candidate_y][candidate_x] != EMPTY) {
-                values[value_idx++] =
-                    collect(numbers, cols, candidate_x, candidate_y);
+                values[value_idx++] = collect(numbers, cols, candidate_x, candidate_y);
             }
         }
         for (int i = 0; i < value_idx; i++) { part1 += values[i]; }

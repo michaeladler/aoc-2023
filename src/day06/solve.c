@@ -50,14 +50,10 @@ void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
         pos++;
 
         i64 tmp;
-        while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) {
-            time[n++] = tmp;
-        }
+        while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) { time[n++] = tmp; }
         aoc_parse_seek(buf, &pos, ':');
         pos++;
-        for (int i = 0; i < n; i++) {
-            record_dist[i] = aoc_parse_nonnegative(buf, &pos);
-        }
+        for (int i = 0; i < n; i++) { record_dist[i] = aoc_parse_nonnegative(buf, &pos); }
     }
 
     i64 part1 = 1, part2 = 1;
@@ -71,21 +67,13 @@ void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
     // part 2
     i64 time_digits[16], record_digits[16];
     int time_digits_count = 0, record_digits_count = 0;
-    for (int i = 0; i < n; i++) {
-        extract_digits(time[i], time_digits, &time_digits_count);
-    }
+    for (int i = 0; i < n; i++) { extract_digits(time[i], time_digits, &time_digits_count); }
 
-    for (int i = 0; i < n; i++) {
-        extract_digits(record_dist[i], record_digits, &record_digits_count);
-    }
+    for (int i = 0; i < n; i++) { extract_digits(record_dist[i], record_digits, &record_digits_count); }
 
     i64 time_avail = 0, record = 0;
-    for (int i = 0; i < time_digits_count; i++) {
-        time_avail = (time_avail * 10) + time_digits[i];
-    }
-    for (int i = 0; i < record_digits_count; i++) {
-        record = (record * 10) + record_digits[i];
-    }
+    for (int i = 0; i < time_digits_count; i++) { time_avail = (time_avail * 10) + time_digits[i]; }
+    for (int i = 0; i < record_digits_count; i++) { record = (record * 10) + record_digits[i]; }
 
     i64 count = count_values(time_avail, record);
     if (count > 0) part2 *= count;

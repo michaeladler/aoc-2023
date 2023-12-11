@@ -49,9 +49,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
 
     { // parser
         size_t pos = 0;
-        while (buf[pos] != '\n') {
-            instruction[instruction_count++] = buf[pos++];
-        }
+        while (buf[pos] != '\n') { instruction[instruction_count++] = buf[pos++]; }
         pos += 2; // two newlines
         log_debug("instructions: %.*s", instruction_count, instruction);
         while (pos < buf_size) {

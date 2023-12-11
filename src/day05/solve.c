@@ -48,9 +48,7 @@ static inline bool Interval_contains(Interval *interval, i64 value) {
 }
 
 static inline i64 Map_lookup(const Map *m, i64 number) {
-    if (number >= m->src && number < m->src + m->len) {
-        return m->dst + (number - m->src);
-    }
+    if (number >= m->src && number < m->src + m->len) { return m->dst + (number - m->src); }
     return number;
 }
 
@@ -79,9 +77,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
     pos++;
 
     i64 tmp;
-    while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) {
-        seeds[seeds_count++] = tmp;
-    }
+    while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) { seeds[seeds_count++] = tmp; }
 
     while (pos < buf_size) {
         while (buf[pos] == '\n') pos++;

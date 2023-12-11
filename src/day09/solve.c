@@ -35,8 +35,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
                 bool all_zero = true;
                 // there are history_count - depth items at depth
                 for (size_t i = 0; i < history_count - depth; i++) {
-                    i64 value = differences[depth - 1][base_idx + i + 1] -
-                                differences[depth - 1][base_idx + i];
+                    i64 value = differences[depth - 1][base_idx + i + 1] - differences[depth - 1][base_idx + i];
                     if (value != 0) all_zero = false;
                     differences[depth][base_idx + i] = value;
                 }
@@ -49,12 +48,10 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
             do {
                 depth--;
                 size_t idx = history_count - depth; // position of item to add
-                i64 value = differences[depth][base_idx + idx - 1] +
-                            differences[depth + 1][base_idx + idx - 1];
+                i64 value = differences[depth][base_idx + idx - 1] + differences[depth + 1][base_idx + idx - 1];
                 differences[depth][base_idx + idx] = value;
 
-                value = differences[depth][base_idx] -
-                        differences[depth + 1][base_idx - 1];
+                value = differences[depth][base_idx] - differences[depth + 1][base_idx - 1];
                 differences[depth][base_idx - 1] = value;
 
             } while (depth != 0);

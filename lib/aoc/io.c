@@ -27,8 +27,7 @@ int aoc_io_read_input(const char *fname, char *buf, size_t buf_size) {
     fseek(f, 0, SEEK_END);
     size_t fsize = ftell(f);
     if (fsize >= buf_size) {
-        fprintf(stderr, "File (%zu) too large for buffer (%zu)\n", fsize,
-                buf_size);
+        fprintf(stderr, "File (%zu) too large for buffer (%zu)\n", fsize, buf_size);
         return -2;
     }
     rewind(f);

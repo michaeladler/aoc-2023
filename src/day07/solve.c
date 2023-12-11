@@ -21,9 +21,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
 
     // parser
     while (pos < buf_size) {
-        for (int i = 0; i < CARDS_PER_HAND; i++) {
-            hand[hand_count].cards[i] = buf[pos++];
-        }
+        for (int i = 0; i < CARDS_PER_HAND; i++) { hand[hand_count].cards[i] = buf[pos++]; }
         hand[hand_count].bid = aoc_parse_nonnegative(buf, &pos);
         hand_count++;
         pos++; // newline

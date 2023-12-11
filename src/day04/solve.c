@@ -24,16 +24,12 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         aoc_parse_seek(buf, &pos, ':');
         pos++;
 
-        while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) {
-            wc[wc_count++] = tmp;
-        }
+        while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) { wc[wc_count++] = tmp; }
 
         aoc_parse_seek(buf, &pos, '|');
         pos++;
 
-        while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) {
-            mc[mc_count++] = tmp;
-        }
+        while ((tmp = aoc_parse_nonnegative(buf, &pos)) >= 0) { mc[mc_count++] = tmp; }
 
         int_tim_sort(wc, wc_count);
         int_tim_sort(mc, mc_count);
@@ -50,9 +46,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         if (match_count > 0) {
             part1 += 1 << (match_count - 1);
             int instances = copies[card_id];
-            for (int c = card_id + 1; c <= card_id + match_count; c++) {
-                copies[c] += instances;
-            }
+            for (int c = card_id + 1; c <= card_id + match_count; c++) { copies[c] += instances; }
         }
 
         pos++; // newline

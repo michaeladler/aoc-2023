@@ -18,12 +18,4 @@ typedef struct {
     i32 bid;
 } Hand;
 
-typedef enum {
-    HIGH_CARD,
-    ONE_PAIR,
-    TWO_PAIR,
-    THREE_KIND,
-    FULL_HOUSE,
-    FOUR_KIND,
-    FIVE_KIND
-} hand_strength;
+typedef enum { HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_KIND, FULL_HOUSE, FOUR_KIND, FIVE_KIND } hand_strength;

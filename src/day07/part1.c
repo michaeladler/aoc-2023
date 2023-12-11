@@ -39,18 +39,14 @@ static inline int break_tie(Hand x, Hand y) {
     // card in each hand, then the fourth, then the fifth.
     for (int i = 0; i < CARDS_PER_HAND; i++) {
         char lhs = x.cards[i], rhs = y.cards[i];
-        if (lhs != rhs) {
-            return card_strength(lhs) < card_strength(rhs) ? LT : GT;
-        }
+        if (lhs != rhs) { return card_strength(lhs) < card_strength(rhs) ? LT : GT; }
     }
     return EQ;
 }
 
 hand_strength Hand_compute_strength(Hand h) {
     int occurences[13] = {0};
-    for (int i = 0; i < CARDS_PER_HAND; i++) {
-        occurences[card_strength(h.cards[i])]++;
-    }
+    for (int i = 0; i < CARDS_PER_HAND; i++) { occurences[card_strength(h.cards[i])]++; }
 
     bool has_quintet = false, has_quadruple = false, has_triple = false;
     int pair_count = 0;

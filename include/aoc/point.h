@@ -15,9 +15,7 @@ typedef struct {
     int y;
 } Point2D;
 
-inline int Point2D_equal(Point2D *lhs, Point2D *rhs) {
-    return lhs->x == rhs->x && lhs->y == rhs->y;
-}
+inline int Point2D_equal(Point2D *lhs, Point2D *rhs) { return lhs->x == rhs->x && lhs->y == rhs->y; }
 
 inline size_t Point2D_hash(Point2D *p) {
     const size_t prime = 31;
