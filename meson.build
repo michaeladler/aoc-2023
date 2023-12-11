@@ -26,7 +26,6 @@ aoc_lib = static_library(
     'lib/aoc/io.c',
     'lib/aoc/math.c',
     'lib/aoc/parser.c',
-    'lib/aoc/point.c',
     'lib/aoc/string.c',
     include_directories: include_directories(inc_dirs)
 )
@@ -42,6 +41,7 @@ days = {
   'day08': [ 'src/day08/solve.c' ],
   'day09': [ 'src/day09/solve.c' ],
   'day10': [ 'src/day10/solve.c' ],
+  'day11': [ 'src/day11/solve.c' ],
   # XXX: marker
 }
 
