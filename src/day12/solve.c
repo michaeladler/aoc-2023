@@ -57,7 +57,7 @@ int CacheItem_equal(CacheItem *lhs, CacheItem *rhs) {
 #define T CacheItem
 #include <ust.h>
 
-static size_t find_solutions(ust_CacheItem *cache, char *spring, int spring_size, int size[MAX_GROUPS], int size_count,
+static size_t find_solutions(ust_CacheItem *cache, char *spring, int spring_size, int *size, int size_count,
                              int group_size) {
     // check cache for answer
     CacheItem item = {.spring = spring, .spring_size = spring_size, .size_count = size_count, .group_size = group_size};
