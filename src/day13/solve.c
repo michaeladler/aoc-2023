@@ -87,6 +87,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
                 int col = x + 1;
                 log_debug("found perfect vertical reflection between %d and %d", col, col + 1);
                 part1 += col;
+                break;
             }
         }
         for (int y = 0; y < grid.rows - 1; y++) {
@@ -94,6 +95,7 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
                 int row = y + 1;
                 log_debug("found perfect horizontal reflection between %d and %d", row, row + 1);
                 part1 += 100 * row;
+                break;
             }
         }
     }
