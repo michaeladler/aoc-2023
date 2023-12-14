@@ -18,6 +18,7 @@ c = meson.get_compiler('c')
 inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/log', 'vendor/str']
 
 m_dep = c.find_library('m', required : false)
+xxhash_dep = c.find_library('xxhash', required : true)
 
 aoc_lib = static_library(
     'aoc_lib',
@@ -42,7 +43,7 @@ days = {
   'day09': [ 'src/day09/solve.c' ],
   'day10': [ 'src/day10/solve.c' ],
   'day11': [ 'src/day11/solve.c' ],
-  'day12': [ 'src/day12/solve.c', 'src/day12/backtrack.c' ],
+  'day12': [ 'src/day12/solve.c' ],
   # XXX: marker
 }
 
@@ -51,7 +52,7 @@ foreach day, sources : days
     [ 'src/main.c' ] + sources,
     c_args: [f'-DDAY="@day@"'],
     link_with: aoc_lib,
-    dependencies : m_dep,
+    dependencies : [ m_dep, xxhash_dep ],
     include_directories: include_directories(inc_dirs))
 
   test(day,
@@ -59,7 +60,7 @@ foreach day, sources : days
       [ f'src/@day@/solve_test.c'] + sources,
       c_args: [f'-DDAY="@day@"'],
       link_with: aoc_lib,
-      dependencies : m_dep,
+      dependencies : [ m_dep, xxhash_dep ],
       include_directories: include_directories(inc_dirs + ['vendor/ctest']))
   )
 endforeach

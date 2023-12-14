@@ -15,7 +15,8 @@
             mcc-env = (callPackage mini-compile-commands { }).wrap clangStdenv;
           in
           (mkShell.override { stdenv = mcc-env; }) {
-            nativeBuildInputs = [ meson ninja clang-analyzer ];
+            nativeBuildInputs = [ meson ninja clang-analyzer pkg-config ];
+            buildInputs = [ xxHash ];
           };
 
       });
