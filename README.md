@@ -53,7 +53,7 @@ Compiled using clang 16 and LTO.
 | 9   | 256 µs          | 464 µs                |
 | 10  | 5.8 ms          | 16.4 ms               |
 | 11  | 980 µs          | 1.7 ms                |
-| 12  | 416 ms          | 554 ms                |
+| 12  | 347 ms          | 554 ms                |
 
 ## 🙏 Acknowledgments and Resources
 
@@ -67,3 +67,4 @@ Special thanks to the authors of these very useful C resources:
 - [Sort](https://github.com/swenson/sort/) - A collection of sorting algorithms implemented in C.
 - [str](https://github.com/maxim2266/str) - yet another string library for C language.
 - [xxhash](https://github.com/Cyan4973/xxHash) - Extremely fast non-cryptographic hash algorithm.
+- [slice99](https://github.com/Hirrolot/slice99) -  Memory slices for C99.

@@ -15,7 +15,7 @@ endif
 
 c = meson.get_compiler('c')
 
-inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/log', 'vendor/str']
+inc_dirs = ['include', 'vendor/ctl', 'vendor/sort', 'vendor/log', 'vendor/str', 'vendor/slice99']
 
 m_dep = c.find_library('m', required : false)
 xxhash_dep = c.find_library('xxhash', required : true)
