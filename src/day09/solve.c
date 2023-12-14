@@ -20,9 +20,8 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
         i64 differences[MAX_HISTORY][MAX_HISTORY] = {0};
         size_t history_count = 0;
 
-        bool ok;
         i64 tmp;
-        while ((ok = aoc_parse_integer(buf, &pos, &tmp)) == true) {
+        while (aoc_parse_integer(buf, &pos, &tmp)) {
             differences[0][base_idx + history_count] = tmp;
             history_count++;
         }
