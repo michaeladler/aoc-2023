@@ -6,6 +6,10 @@ _default:
 watch:
     fd ".*c$" -t f | entr ninja -C build test
 
+watch-latest:
+    #!/usr/bin/env bash
+    fd ".*c$" -t f | entr -s "just test-latest && notify-send -t 5000 'AoC tests ok'"
+
 generate DAY:
     #!/usr/bin/env bash
     set -eu

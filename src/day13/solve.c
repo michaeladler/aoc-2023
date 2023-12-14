@@ -21,16 +21,11 @@ typedef struct {
     int cols;
 } grid_t;
 
-/*
-static void print_grid(const grid_t *grid) {
-    for (int y = 0; y < grid->rows; y++) {
-        for (int x = 0; x < grid->cols; x++) { printf("%c", grid->data[y][x]); }
-        puts("");
-    }
-}
-*/
-
-static bool is_perfect_vertical(const grid_t *grid, int x) {
+// Check if we the vertical line at 'x' is perfect.
+// Returns the number of incorrect reflections. If it's zero, the line is
+// perfect.
+static int is_perfect_vertical(const grid_t *grid, int x) {
+    int wrong_count = 0;
     // x denotes the position of the > in ><
     int delta = 0;
     while (1) {
@@ -39,14 +34,18 @@ static bool is_perfect_vertical(const grid_t *grid, int x) {
         if (x_left < 0 || x_right >= grid->cols) break;
         // compare columns
         for (int y = 0; y < grid->rows; y++) {
-            if (grid->data[y][x_left] != grid->data[y][x_right]) return false;
+            if (grid->data[y][x_left] != grid->data[y][x_right]) { wrong_count++; }
         }
         delta++;
     }
-    return true;
+    return wrong_count;
 }
 
-static bool is_perfect_horizontal(const grid_t *grid, int y) {
+// Check if we the horizontal line at 'y' is perfect.
+// Returns the number of incorrect reflections. If it's zero, the line is
+// perfect.
+static int is_perfect_horizontal(const grid_t *grid, int y) {
+    int wrong_count = 0;
     // y denotes the position of the v
     int delta = 0;
     while (1) {
@@ -55,11 +54,11 @@ static bool is_perfect_horizontal(const grid_t *grid, int y) {
         if (y_top < 0 || y_down >= grid->rows) break;
         // compare rows
         for (int x = 0; x < grid->cols; x++) {
-            if (grid->data[y_top][x] != grid->data[y_down][x]) return false;
+            if (grid->data[y_top][x] != grid->data[y_down][x]) { wrong_count++; }
         }
         delta++;
     }
-    return true;
+    return wrong_count;
 }
 
 void solve(const char *buf, size_t buf_size, Solution *result) {
@@ -80,22 +79,31 @@ void solve(const char *buf, size_t buf_size, Solution *result) {
                 break;
             }
         }
-        log_debug(">> grid has %d rows, %d cols", grid.rows, grid.cols);
 
+        bool p1_done = false;
+        bool p2_done = false;
         for (int x = 0; x < grid.cols - 1; x++) {
-            if (is_perfect_vertical(&grid, x)) {
-                int col = x + 1;
-                log_debug("found perfect vertical reflection between %d and %d", col, col + 1);
+            if (p1_done && p2_done) continue;
+            int wrong_count = is_perfect_vertical(&grid, x);
+            int col = x + 1;
+            if (wrong_count == 0) {
                 part1 += col;
-                break;
+                p1_done = true;
+            } else if (wrong_count == 1) {
+                part2 += col;
+                p2_done = true;
             }
         }
         for (int y = 0; y < grid.rows - 1; y++) {
-            if (is_perfect_horizontal(&grid, y)) {
-                int row = y + 1;
-                log_debug("found perfect horizontal reflection between %d and %d", row, row + 1);
+            if (p1_done && p2_done) continue;
+            int wrong_count = is_perfect_horizontal(&grid, y);
+            int row = y + 1;
+            if (wrong_count == 0) {
                 part1 += 100 * row;
-                break;
+                p1_done = true;
+            } else if (wrong_count == 1) {
+                part2 += 100 * row;
+                p2_done = true;
             }
         }
     }
