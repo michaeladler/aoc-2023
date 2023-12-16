@@ -16,7 +16,7 @@ CTEST(day15, example) {
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("1320", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("145", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
@@ -24,7 +24,7 @@ CTEST(day15, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("515495", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("229349", solution.part2);
 }
 #endif
 

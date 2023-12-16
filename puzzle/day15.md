@@ -78,8 +78,6 @@ Run the HASH algorithm on each step in the initialization sequence. What is the 
 
 Your puzzle answer was 515495.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 
 You convince the reindeer to bring you the page; the page confirms that your HASH algorithm is working.
@@ -181,9 +179,13 @@ So, the above example ends up with a total focusing power of 145.
 
 With the help of an over-enthusiastic reindeer in a hard hat, follow the initialization sequence. What is the focusing power of the resulting lens configuration?
 
-Answer:
+Your puzzle answer was 229349.
 
-Although it hasn't changed, you can still get your puzzle input.
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.
 
 You can also [Shareon Twitter Mastodon] this puzzle.
 
