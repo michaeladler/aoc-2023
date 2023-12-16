@@ -1,0 +1,28 @@
+name: Update AoC Badges
+on:
+  schedule:
+    - cron: '6 5 1-25 12 *'                      # from the 1. December till 25. December every day at 5:06am (avoid load at full hours)
+
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: joblo2213/aoc-badges-action@v3
+        with:
+          userid: 648624
+          session: ${{ secrets.AOC_SESSION }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update AoC badge"
+          file_pattern: README.md
