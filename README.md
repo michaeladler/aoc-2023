@@ -17,7 +17,7 @@ For example, you can run `./day01 mine.txt` to specify a different input file.
 ## 🏗 Building and Running Tests
 
 Each puzzle in this repository is accompanied by tests, which are designed using both the examples provided in the puzzle and the actual `input.txt` file.
-Since sharing the puzzle input data is discouraged, the **inputs are not contained in this repository**.
+Since sharing the puzzle input data is discouraged, the inputs have been encrypted.
 
 **Note**: Tests using the actual `input.txt` have to be enabled at compile time with the `-Dhave-inputs=true` option (this only make sense if you have my `input.txt` files since your answers will differ from mine).
 
