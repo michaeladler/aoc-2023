@@ -130,7 +130,7 @@ void solve(char *buf, size_t buf_size, Solution *result) {
 
     i64 part1, part2 = 0;
 
-    XXH128_hash_t hashes[MAX_CYCLE_LEN];
+    XXH128_hash_t hashes[MAX_CYCLE_LEN] = {0};
     int hashes_count = 0;
     _cleanup_(ust_XXH128_hash_t_free) ust_XXH128_hash_t seen = ust_XXH128_hash_t_init(hash, equal);
     ust_XXH128_hash_t_reserve(&seen, MAX_CYCLE_LEN);
