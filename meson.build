@@ -57,6 +57,7 @@ foreach day, sources : days
     c_args: [f'-DDAY="@day@"'],
     link_with: aoc_lib,
     dependencies : [ m_dep, xxhash_dep ],
+    install : true,
     include_directories: include_directories(inc_dirs))
 
   test(day,
