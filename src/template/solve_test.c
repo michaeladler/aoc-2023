@@ -12,7 +12,7 @@
 #include "solve.h"
 
 CTEST(dayXX, example) {
-    const char *buf = "foo\n\
+    char *buf = "foo\n\
 bar\n";
     Solution solution;
     solve(buf, strlen(buf), &solution);
