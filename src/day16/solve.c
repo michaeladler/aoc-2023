@@ -130,10 +130,43 @@ void solve(char *buf, size_t buf_size, Solution *result) {
     }
     log_debug("rows: %d, cols: %d", rows, cols);
 
-    beam_t start = (beam_t){.x = 0, .y = 0, .direction = EAST};
-    int part1 = run_simulation(start, rows, cols);
-
-    int part2 = 0;
+    // brute force
+    int part1 = 0, part2 = 0;
+    for (direction_t direction = 0; direction < 4; direction++) {
+        // top row
+        if (direction != NORTH) {
+            for (int x = 0; x < cols; x++) {
+                beam_t start = (beam_t){.x = x, .y = 0, .direction = direction};
+                int value = run_simulation(start, rows, cols);
+                if (direction == EAST && x == 0) part1 = value;
+                part2 = MAX(part2, value);
+            }
+        }
+        // bottom row
+        if (direction != SOUTH) {
+            for (int x = 0; x < cols; x++) {
+                beam_t start = (beam_t){.x = x, .y = rows - 1, .direction = direction};
+                int value = run_simulation(start, rows, cols);
+                part2 = MAX(part2, value);
+            }
+        }
+        // left row
+        if (direction != WEST) {
+            for (int y = 0; y < rows; y++) {
+                beam_t start = (beam_t){.x = 0, .y = y, .direction = direction};
+                int value = run_simulation(start, rows, cols);
+                part2 = MAX(part2, value);
+            }
+        }
+        // right row
+        if (direction != EAST) {
+            for (int y = 0; y < rows; y++) {
+                beam_t start = (beam_t){.x = cols - 1, .y = y, .direction = direction};
+                int value = run_simulation(start, rows, cols);
+                part2 = MAX(part2, value);
+            }
+        }
+    }
 
     aoc_itoa(part1, result->part1, 10);
     aoc_itoa(part2, result->part2, 10);
