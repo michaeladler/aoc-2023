@@ -66,7 +66,7 @@ static inline i64 Recipe_lookup(Recipe *r, i64 number) {
     return number;
 }
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     u16 seeds_count = 0, recipe_count = 0;
     i64 seeds[32];
     Recipe recipes[32] = {0};

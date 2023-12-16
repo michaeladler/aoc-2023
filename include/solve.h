@@ -15,5 +15,5 @@ typedef struct Solution {
     char part2[64];
 } Solution;
 
-void solve(const char *buf, size_t buf_size, Solution *result);
+void solve(char *buf, size_t buf_size, Solution *result);
 int solve_input(const char *fname, Solution *result);

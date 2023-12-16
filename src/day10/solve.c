@@ -103,7 +103,7 @@ static inline int find_neighbors(Grid grid, Point2D p, Point2D out[2]) {
     return count;
 }
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     int part1 = 0, part2 = 0;
     size_t pos = 0;
 

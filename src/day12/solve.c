@@ -98,7 +98,7 @@ static size_t find_solutions(ust_CacheItem *cache, Slice99 spring, Slice99 size,
     return count;
 }
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     size_t part1 = 0, part2 = 0;
 
     for (size_t pos = 0; pos < buf_size;) { // parser

@@ -40,7 +40,7 @@ static inline i64 count_values(i64 time_avail, i64 record) {
     return u - l + 1;
 }
 
-void solve(const char *buf, size_t _unused_ buf_size, Solution *result) {
+void solve(char *buf, size_t _unused_ buf_size, Solution *result) {
     i32 time[N], record_dist[N];
     int n = 0;
 

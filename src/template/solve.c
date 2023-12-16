@@ -9,7 +9,7 @@
 #include "solve.h"
 #include "aoc/all.h"
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     int part1 = 0, part2 = 0;
     size_t pos = 0;
     while (pos < buf_size) {

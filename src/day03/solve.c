@@ -36,7 +36,7 @@ static inline int collect(int8_t numbers[MAX_NUMBERS][MAX_NUMBERS], int cols, in
     return value;
 }
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     int cols = 0;
     while (buf[cols] != '\n') cols++;
     int rows = 0;

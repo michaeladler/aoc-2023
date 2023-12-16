@@ -13,7 +13,7 @@
 
 static const i64 expand_p2 = 1000000 - 1;
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
 
     i64 part1 = 0, part2 = 0;
     size_t pos = 0;

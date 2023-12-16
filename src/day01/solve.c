@@ -24,7 +24,7 @@ static const char SEVEN[] = {'s', 'e', 'v', 'e', 'n'};
 static const char EIGHT[] = {'e', 'i', 'g', 'h', 't'};
 static const char NINE[] = {'n', 'i', 'n', 'e'};
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     int part1 = 0, part2 = 0;
     size_t pos = 0;
     int digits[64] = {0}, digits2[64] = {0};

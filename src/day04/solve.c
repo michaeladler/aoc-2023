@@ -12,7 +12,7 @@
 // forward decl (to speed up incremental compilation)
 void int_tim_sort(int *dst, const size_t size);
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     int part1 = 0, part2 = 0, card_id = 1, tmp;
     int copies[256] = {0};
     size_t pos = 0;

@@ -39,7 +39,7 @@ static inline Node idx_to_Node(u32 idx) {
     return result;
 }
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     char instruction[300];
     u32 instruction_count = 0;
     Waypoint node_to_wp[26 * 26 * 26] = {0};

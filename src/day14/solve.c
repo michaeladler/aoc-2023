@@ -110,7 +110,7 @@ static size_t hash(XXH128_hash_t *x) {
 
 static int equal(XXH128_hash_t *a, XXH128_hash_t *b) { return a->low64 == b->low64 && a->high64 == b->high64; }
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     size_t pos = 0;
     int rows, cols = 0;
     { // parser

@@ -13,7 +13,7 @@
 #include "aoc/all.h"
 #include "solve.h"
 
-void solve(const char *buf, size_t buf_size, Solution *result) {
+void solve(char *buf, size_t buf_size, Solution *result) {
     int part1 = 0, part2 = 0;
     size_t pos = 0;
     int game_id = 1;
