@@ -20,6 +20,8 @@ typedef struct {
     direction_t direction;
 } beam_t;
 
+static char grid[MAX_GRID_SIZE][MAX_GRID_SIZE];
+
 static inline void advance_beam(beam_t *beam) {
     switch (beam->direction) {
     case NORTH: beam->y--; break;
@@ -39,30 +41,13 @@ static inline char pretty_direction(direction_t d) {
     }
 }
 
-void solve(char *buf, size_t buf_size, Solution *result) {
-    char grid[MAX_GRID_SIZE][MAX_GRID_SIZE];
-    int rows = 0, cols = 0;
-
-    size_t pos = 0;
-    int x = 0;
-    while (pos < buf_size) {
-        char c = buf[pos++];
-        if (c == '\n') {
-            cols = x;
-            x = 0;
-            rows++;
-            continue;
-        }
-        grid[rows][x++] = c;
-    }
-    log_debug("rows: %d, cols: %d", rows, cols);
-
+static int run_simulation(beam_t start, int rows, int cols) {
     // each entry is a bitset containing the directions of the beam which visited it
     int visited[MAX_GRID_SIZE][MAX_GRID_SIZE];
     memset(visited, 0, sizeof(visited));
 
     beam_t beam[MAX_BEAMS];
-    beam[0] = (beam_t){.x = 0, .y = 0, .direction = EAST};
+    beam[0] = start;
     int beam_count = 1;
     while (beam_count > 0) {
         beam_t *b = &beam[beam_count - 1];
@@ -121,10 +106,34 @@ void solve(char *buf, size_t buf_size, Solution *result) {
         advance_beam(b);
     }
 
-    int part1 = 0, part2 = 0;
+    int sum = 0;
     for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) { part1 += visited[y][x] != 0; }
+        for (int x = 0; x < cols; x++) { sum += visited[y][x] != 0; }
     }
+    return sum;
+}
+
+void solve(char *buf, size_t buf_size, Solution *result) {
+    int rows = 0, cols = 0;
+
+    size_t pos = 0;
+    int x = 0;
+    while (pos < buf_size) {
+        char c = buf[pos++];
+        if (c == '\n') {
+            cols = x;
+            x = 0;
+            rows++;
+            continue;
+        }
+        grid[rows][x++] = c;
+    }
+    log_debug("rows: %d, cols: %d", rows, cols);
+
+    beam_t start = (beam_t){.x = 0, .y = 0, .direction = EAST};
+    int part1 = run_simulation(start, rows, cols);
+
+    int part2 = 0;
 
     aoc_itoa(part1, result->part1, 10);
     aoc_itoa(part2, result->part2, 10);
