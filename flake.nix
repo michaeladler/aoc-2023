@@ -19,5 +19,7 @@
             buildInputs = [ xxHash ];
           };
 
+        packages.default = pkgs.callPackage ./pkg.nix { };
+
       });
 }

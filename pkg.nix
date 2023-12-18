@@ -1,8 +1,8 @@
 { stdenv, lib, meson, ninja, pkg-config, xxHash }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "aoc-2023";
-  version = "0.1.1";
+  version = "0.1.0";
 
   src = ./.;
 
@@ -10,6 +10,5 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ xxHash ];
 
-  NIX_LDFLAGS = "-lm";
-
+  # mesonFlags = [ "-Db_lto=true " ];
 }
