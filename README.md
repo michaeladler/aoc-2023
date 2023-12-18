@@ -56,9 +56,9 @@ Compiled using clang 16 and LTO.
 | 11  | 980 µs          | 1.7 ms                |
 | 12  | 347 ms          | 554 ms                |
 | 13  | 248 µs          | 486 µs                |
-| 14  |                 | 53.4 ms               |
-| 15  |                 | 1 ms                  |
-| 16  |                 | 33.5 ms               |
+| 14  | 44 ms           | 53.4 ms               |
+| 15  | 1.1 ms          | 1 ms                  |
+| 16  | 34.4 ms         | 33.5 ms               |
 
 ## 🙏 Acknowledgments and Resources
 
