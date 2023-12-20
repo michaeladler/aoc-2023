@@ -48,6 +48,7 @@ days = {
   'day14': [ 'src/day14/solve.c' ],
   'day15': [ 'src/day15/solve.c' ],
   'day16': [ 'src/day16/solve.c' ],
+  'day17': [ 'src/day17/solve.c' ],
   # XXX: marker
 }
 
