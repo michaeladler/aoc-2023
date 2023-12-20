@@ -69,9 +69,6 @@ static inline void add_node(int rows, int cols, Node node, Node *arr, int *arr_l
 
 static inline int find_neighbors(int rows, int cols, Node current, Node *neighbor) {
     bool must_turn = current.direction_count == 3;
-    log_debug(">> visiting %d,%d, must_turn: %d, dir: %d, dir_count: %d", current.position.y, current.position.x,
-              must_turn, current.direction, current.direction_count);
-
     int count = 0;
     Node north = {.position = (Point2D){.x = current.position.x, .y = current.position.y - 1},
                   .direction = NORTH,
@@ -122,6 +119,65 @@ static inline int find_neighbors(int rows, int cols, Node current, Node *neighbo
     return count;
 }
 
+static inline int find_neighbors_part2(int rows, int cols, Node current, Node *neighbor) {
+    int count = 0;
+    Node north = {.position = (Point2D){.x = current.position.x, .y = current.position.y - 1},
+                  .direction = NORTH,
+                  .direction_count = 1};
+    Node south = {.position = (Point2D){.x = current.position.x, .y = current.position.y + 1},
+                  .direction = SOUTH,
+                  .direction_count = 1};
+    Node east = {.position = (Point2D){.x = current.position.x + 1, .y = current.position.y},
+                 .direction = EAST,
+                 .direction_count = 1};
+    Node west = {.position = (Point2D){.x = current.position.x - 1, .y = current.position.y},
+                 .direction = WEST,
+                 .direction_count = 1};
+    switch (current.direction) {
+    case EAST:
+        if (current.direction_count >= 4) {
+            add_node(rows, cols, north, neighbor, &count);
+            add_node(rows, cols, south, neighbor, &count);
+        }
+        if (current.direction_count < 10) {
+            east.direction_count = current.direction_count + 1;
+            add_node(rows, cols, east, neighbor, &count);
+        }
+        break;
+    case WEST:
+        if (current.direction_count >= 4) {
+            add_node(rows, cols, north, neighbor, &count);
+            add_node(rows, cols, south, neighbor, &count);
+        }
+        if (current.direction_count < 10) {
+            west.direction_count = current.direction_count + 1;
+            add_node(rows, cols, west, neighbor, &count);
+        }
+        break;
+    case SOUTH:
+        if (current.direction_count >= 4) {
+            add_node(rows, cols, west, neighbor, &count);
+            add_node(rows, cols, east, neighbor, &count);
+        }
+        if (current.direction_count < 10) {
+            south.direction_count = current.direction_count + 1;
+            add_node(rows, cols, south, neighbor, &count);
+        }
+        break;
+    case NORTH:
+        if (current.direction_count >= 4) {
+            add_node(rows, cols, west, neighbor, &count);
+            add_node(rows, cols, east, neighbor, &count);
+        }
+        if (current.direction_count < 10) {
+            north.direction_count = current.direction_count + 1;
+            add_node(rows, cols, north, neighbor, &count);
+        }
+        break;
+    }
+    return count;
+}
+
 void solve(char *buf, size_t buf_size, Solution *result) {
     int part1 = 0, part2 = 0;
 
@@ -139,53 +195,93 @@ void solve(char *buf, size_t buf_size, Solution *result) {
         default: grid[rows][x++] = c - '0'; break;
         }
     }
-    log_debug("rows: %d, cols: %d", rows, cols);
 
     Point2D start = {.x = 0, .y = 0}, dest = {.x = cols - 1, .y = rows - 1};
     Node start_node_1 = {.position = start, .direction = EAST, .direction_count = 0};
     Node start_node_2 = {.position = start, .direction = SOUTH, .direction_count = 0};
 
-    // Dijkstra
-    _cleanup_(pqu_State_free) pqu_State queue = pqu_State_init(State_compare);
-    pqu_State_push(&queue, (State){.node = start_node_1, .dist = 0});
-    pqu_State_push(&queue, (State){.node = start_node_2, .dist = 0});
+    // Dijkstra part 1
+    {
+        _cleanup_(pqu_State_free) pqu_State queue = pqu_State_init(State_compare);
+        pqu_State_push(&queue, (State){.node = start_node_1, .dist = 0});
+        pqu_State_push(&queue, (State){.node = start_node_2, .dist = 0});
 
-    _cleanup_(ust_NodeDistance_free) ust_NodeDistance distances =
-        ust_NodeDistance_init(NodeDistance_hash, NodeDistance_equal);
-    ust_NodeDistance_insert(&distances, (NodeDistance){.node = start_node_1, .distance = 0});
-    ust_NodeDistance_insert(&distances, (NodeDistance){.node = start_node_2, .distance = 0});
+        _cleanup_(ust_NodeDistance_free) ust_NodeDistance distances =
+            ust_NodeDistance_init(NodeDistance_hash, NodeDistance_equal);
+        ust_NodeDistance_insert(&distances, (NodeDistance){.node = start_node_1, .distance = 0});
+        ust_NodeDistance_insert(&distances, (NodeDistance){.node = start_node_2, .distance = 0});
 
-    // dijkstra
-    while (!pqu_State_empty(&queue)) {
-        State current = *pqu_State_top(&queue);
-        pqu_State_pop(&queue);
+        // dijkstra
+        while (!pqu_State_empty(&queue)) {
+            State current = *pqu_State_top(&queue);
+            pqu_State_pop(&queue);
 
-        if (Point2D_equal(&current.node.position, &dest)) {
-            log_debug("found destination %d,%d: %d", current.node.position.y, current.node.position.x, current.dist);
-            part1 = current.dist;
-            break;
-        }
-
-        Node neighbor[3];
-        int neighbor_count = find_neighbors(rows, cols, current.node, neighbor);
-
-        for (int i = 0; i < neighbor_count; i++) {
-            Node nb = neighbor[i];
-            int alt = current.dist + grid[nb.position.y][nb.position.x];
-            NodeDistance node_distance = {.node = nb, .distance = alt};
-            ust_NodeDistance_node *entry = ust_NodeDistance_find(&distances, node_distance);
-            if (entry != NULL) {
-                if (entry->key.distance <= alt) {
-                    log_debug("discarding y,x %d,%d: current best %d is better than %d", nb.position.y, nb.position.x,
-                              entry->key.distance, alt);
-                    continue;
-                }
-            } else {
-                log_debug("entry %d,%d not found in map", node_distance.node.position.y, node_distance.node.position.x);
+            if (Point2D_equal(&current.node.position, &dest)) {
+                part1 = current.dist;
+                break;
             }
-            log_debug("inserting new best dist for y,x %d,%d: %d", nb.position.y, nb.position.x, alt);
-            ust_NodeDistance_insert(&distances, node_distance);
-            pqu_State_push(&queue, (State){.node = nb, .dist = alt});
+
+            Node neighbor[3];
+            int neighbor_count = find_neighbors(rows, cols, current.node, neighbor);
+            for (int i = 0; i < neighbor_count; i++) {
+                Node nb = neighbor[i];
+                int alt = current.dist + grid[nb.position.y][nb.position.x];
+                NodeDistance node_distance = {.node = nb, .distance = alt};
+                ust_NodeDistance_node *entry = ust_NodeDistance_find(&distances, node_distance);
+                if (entry != NULL && entry->key.distance <= alt) { continue; }
+                ust_NodeDistance_insert(&distances, node_distance);
+                pqu_State_push(&queue, (State){.node = nb, .dist = alt});
+            }
+        }
+    }
+
+    // Dijkstra part 2
+    {
+        _cleanup_(pqu_State_free) pqu_State queue = pqu_State_init(State_compare);
+        pqu_State_push(&queue, (State){.node = start_node_1, .dist = 0});
+        pqu_State_push(&queue, (State){.node = start_node_2, .dist = 0});
+
+        _cleanup_(ust_NodeDistance_free) ust_NodeDistance distances =
+            ust_NodeDistance_init(NodeDistance_hash, NodeDistance_equal);
+        ust_NodeDistance_insert(&distances, (NodeDistance){.node = start_node_1, .distance = 0});
+        ust_NodeDistance_insert(&distances, (NodeDistance){.node = start_node_2, .distance = 0});
+
+        // dijkstra
+        while (!pqu_State_empty(&queue)) {
+            State current = *pqu_State_top(&queue);
+            pqu_State_pop(&queue);
+            log_debug(">> visiting %d,%d", current.node.position.y, current.node.position.x);
+
+            if (Point2D_equal(&current.node.position, &dest) && current.node.direction_count >= 4) {
+                log_debug("found destination %d,%d: %d", current.node.position.y, current.node.position.x,
+                          current.dist);
+                part2 = current.dist;
+                break;
+            }
+
+            Node neighbor[3];
+            int neighbor_count = find_neighbors_part2(rows, cols, current.node, neighbor);
+
+            for (int i = 0; i < neighbor_count; i++) {
+                Node nb = neighbor[i];
+                log_debug("checking neighbor %d,%d", nb.position.y, nb.position.x);
+                int alt = current.dist + grid[nb.position.y][nb.position.x];
+                NodeDistance node_distance = {.node = nb, .distance = alt};
+                ust_NodeDistance_node *entry = ust_NodeDistance_find(&distances, node_distance);
+                if (entry != NULL) {
+                    if (entry->key.distance <= alt) {
+                        log_debug("discarding y,x %d,%d: current best %d is better than %d", nb.position.y,
+                                  nb.position.x, entry->key.distance, alt);
+                        continue;
+                    }
+                } else {
+                    log_debug("entry %d,%d not found in map", node_distance.node.position.y,
+                              node_distance.node.position.x);
+                }
+                log_debug("inserting new best dist for y,x %d,%d: %d", nb.position.y, nb.position.x, alt);
+                ust_NodeDistance_insert(&distances, node_distance);
+                pqu_State_push(&queue, (State){.node = nb, .dist = alt});
+            }
         }
     }
 
