@@ -29,7 +29,7 @@ U 2 (#7a21e3)\n";
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("62", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    ASSERT_STR("952408144115", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
@@ -37,7 +37,7 @@ CTEST(day18, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("52231", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    ASSERT_STR("57196493937398", solution.part2);
 }
 #endif
 
