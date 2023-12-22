@@ -12,8 +12,7 @@
 #include <slice99.h>
 #include <xxhash.h>
 
-#define MAX_RULES 32
-#define UNDEFINED -1
+#define MAX_RULES 8
 
 typedef enum { LT, GT, JUMP } rule_kind_e;
 
@@ -38,34 +37,10 @@ typedef struct {
 #define T workflow_t
 #include <ust.h>
 
-/*
-static size_t rule_t_hash(rule_t *item) {
-    const size_t prime = 31;
-    size_t hash = 17;
-    // Combine the hash of each struct member
-    hash = hash * prime + (size_t)item->kind;
-    hash = hash * prime + (size_t)item->variable;
-    hash = hash * prime + (size_t)item->value;
-    hash = hash * prime + (size_t)XXH3_64bits(item->destination.ptr, item->destination.len);
-    return hash;
-}
-
-static int rule_t_equal(rule_t *lhs, rule_t *rhs) {
-    return lhs->kind == rhs->kind && lhs->variable == rhs->variable && lhs->value == rhs->value &&
-           CharSlice99_primitive_eq(lhs->destination, rhs->destination);
-}
-*/
-
-static size_t workflow_t_hash(workflow_t *wf) {
-    const size_t prime = 31;
-    size_t hash = 17;
-    hash = hash * prime + (size_t)XXH3_64bits(wf->name.ptr, wf->name.len);
-    return hash;
-}
+static size_t workflow_t_hash(workflow_t *wf) { return (size_t)XXH3_64bits(wf->name.ptr, wf->name.len); }
 
 static int workflow_t_equal(workflow_t *lhs, workflow_t *rhs) { return CharSlice99_primitive_eq(lhs->name, rhs->name); }
 
-// apply the rule and return the destination
 static inline bool rule_matches(rule_t *self, data_t data) {
     if (self->kind == JUMP) return true;
     int data_value;
@@ -79,12 +54,11 @@ static inline bool rule_matches(rule_t *self, data_t data) {
     return data_value > self->value;
 }
 
-static inline CharSlice99 workflow_next(workflow_t *wf, data_t data) {
+static inline CharSlice99 *workflow_next(workflow_t *wf, data_t data) {
     for (int i = 0; i < wf->rule_count; i++) {
-        if (rule_matches(&wf->rule[i], data)) { return wf->rule[i].destination; }
+        if (rule_matches(&wf->rule[i], data)) { return &wf->rule[i].destination; }
     }
-    log_error("no rule matches");
-    abort();
+    return NULL;
 }
 
 void solve(char *buf, size_t buf_size, Solution *result) {
@@ -127,16 +101,7 @@ void solve(char *buf, size_t buf_size, Solution *result) {
             }
         }
 
-        log_debug(">> workflow %.*s has %d rules:", wf.name.len, wf.name.ptr, wf.rule_count);
-        for (int i = 0; i < wf.rule_count; i++) {
-            rule_t *rule = &wf.rule[i];
-            if (rule->kind == JUMP) {
-                log_debug("RULE: %.*s", rule->destination.len, rule->destination.ptr);
-            } else {
-                log_debug("RULE: %c%c%d:%.*s", rule->variable, rule->kind == LT ? '<' : '>', rule->value,
-                          rule->destination.len, rule->destination.ptr);
-            }
-        }
+        log_debug(">> workflow %.*s has %d rules", wf.name.len, wf.name.ptr, wf.rule_count);
         ust_workflow_t_insert(&workflows, wf);
 
         aoc_parse_seek(buf, &pos, '\n');
@@ -145,12 +110,13 @@ void solve(char *buf, size_t buf_size, Solution *result) {
     }
 
     ust_workflow_t_node *start_node = ust_workflow_t_find(&workflows, (workflow_t){.name = CharSlice99_from_str("in")});
-    assert(start_node != NULL);
+
+    CharSlice99 accepted = CharSlice99_from_str("A"), rejected = CharSlice99_from_str("R");
 
     pos++;
     while (pos < buf_size) {
         if (buf[pos++] == '{') {
-            data_t data = {.x = UNDEFINED, .m = UNDEFINED, .a = UNDEFINED, .s = UNDEFINED};
+            data_t data = {0};
             while (pos < buf_size) {
                 char var = buf[pos];
                 pos += 2;
@@ -168,14 +134,12 @@ void solve(char *buf, size_t buf_size, Solution *result) {
 
             workflow_t *current = &start_node->key;
             while (1) {
-                CharSlice99 next = workflow_next(current, data);
+                CharSlice99 next = *workflow_next(current, data);
                 log_debug("%.*s -> %.*s", current->name.len, current->name.ptr, next.len, next.ptr);
-                if (CharSlice99_primitive_eq(next, CharSlice99_from_str("A"))) {
+                if (CharSlice99_primitive_eq(next, accepted)) {
                     part1 += data.x + data.a + data.m + data.s;
-                    log_debug("accepted");
                     break;
-                } else if (CharSlice99_primitive_eq(next, CharSlice99_from_str("R"))) {
-                    log_debug("rejected");
+                } else if (CharSlice99_primitive_eq(next, rejected)) {
                     break;
                 }
                 current = &ust_workflow_t_find(&workflows, (workflow_t){.name = next})->key;
