@@ -1,5 +1,5 @@
 [![ci](https://github.com/michaeladler/aoc-2023/actions/workflows/ci.yml/badge.svg)](https://github.com/michaeladler/aoc-2023/actions/workflows/ci.yml)
-![](https://img.shields.io/badge/stars%20⭐-36-yellow)
+![](https://img.shields.io/badge/stars%20⭐-37-yellow)
 
 # 🎄 Advent of Code 2023 Solutions 🎄
 
