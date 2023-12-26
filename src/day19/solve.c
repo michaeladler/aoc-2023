@@ -9,10 +9,11 @@
 #include "solve.h"
 #include "aoc/all.h"
 
-#include <slice99.h>
 #include <xxhash.h>
 
 #define MAX_RULES 8
+#define MAX_NAME 4
+#define MAX_NEIGHBORS 8
 
 typedef enum { LT, GT, JUMP } rule_kind_e;
 
@@ -20,11 +21,11 @@ typedef struct {
     rule_kind_e kind;
     char variable;
     int value;
-    CharSlice99 destination;
+    char destination[MAX_NAME];
 } rule_t;
 
 typedef struct {
-    CharSlice99 name;
+    char name[MAX_NAME];
     rule_t rule[MAX_RULES];
     int rule_count;
 } workflow_t;
@@ -37,9 +38,20 @@ typedef struct {
 #define T workflow_t
 #include <ust.h>
 
-static size_t workflow_t_hash(workflow_t *wf) { return (size_t)XXH3_64bits(wf->name.ptr, wf->name.len); }
+typedef struct {
+    char name[MAX_NAME];
+    char neighbors[MAX_NEIGHBORS][MAX_NAME];
+} graph_t;
 
-static int workflow_t_equal(workflow_t *lhs, workflow_t *rhs) { return CharSlice99_primitive_eq(lhs->name, rhs->name); }
+#define P
+#define T graph_t
+#include <ust.h>
+
+static size_t workflow_t_hash(workflow_t *wf) { return (size_t)XXH3_64bits(wf->name, strlen(wf->name)); }
+
+static int workflow_t_equal(workflow_t *lhs, workflow_t *rhs) {
+    return strncmp(lhs->name, rhs->name, sizeof(lhs->name)) == 0;
+}
 
 static inline bool rule_matches(rule_t *self, data_t data) {
     if (self->kind == JUMP) return true;
@@ -54,9 +66,9 @@ static inline bool rule_matches(rule_t *self, data_t data) {
     return data_value > self->value;
 }
 
-static inline CharSlice99 *workflow_next(workflow_t *wf, data_t data) {
+static inline char *workflow_next(workflow_t *wf, data_t data) {
     for (int i = 0; i < wf->rule_count; i++) {
-        if (rule_matches(&wf->rule[i], data)) { return &wf->rule[i].destination; }
+        if (rule_matches(&wf->rule[i], data)) { return wf->rule[i].destination; }
     }
     return NULL;
 }
@@ -67,13 +79,12 @@ void solve(char *buf, size_t buf_size, Solution *result) {
 
     _cleanup_(ust_workflow_t_free) ust_workflow_t workflows = ust_workflow_t_init(workflow_t_hash, workflow_t_equal);
     ust_workflow_t_reserve(&workflows, 128);
-
     while (1) {
         workflow_t wf = {.rule_count = 0};
 
         size_t start = pos;
         while (buf[pos] != '{') pos++;
-        wf.name = CharSlice99_new(&buf[start], pos - start);
+        memcpy(wf.name, &buf[start], pos - start);
         pos++;
 
         // next are the rules
@@ -88,20 +99,20 @@ void solve(char *buf, size_t buf_size, Solution *result) {
                 pos++;
                 size_t start = pos;
                 while (buf[pos] != ',') pos++;
-                rule->destination = CharSlice99_new(&buf[start], pos - start);
+                memcpy(rule->destination, &buf[start], pos - start);
                 pos++;
                 wf.rule_count++;
             } else { // this is the last rule, a jump
                 rule->kind = JUMP;
                 size_t start = pos;
                 while (buf[pos] != '}') pos++;
-                rule->destination = CharSlice99_new(&buf[start], pos - start);
+                memcpy(rule->destination, &buf[start], pos - start);
                 wf.rule_count++;
                 break;
             }
         }
 
-        log_debug(">> workflow %.*s has %d rules", wf.name.len, wf.name.ptr, wf.rule_count);
+        log_debug(">> workflow %.*s has %d rules", sizeof(wf.name), wf.name, wf.rule_count);
         ust_workflow_t_insert(&workflows, wf);
 
         aoc_parse_seek(buf, &pos, '\n');
@@ -109,9 +120,10 @@ void solve(char *buf, size_t buf_size, Solution *result) {
         if (buf[pos] == '\n') break; // workflows finished, inputs are next
     }
 
-    ust_workflow_t_node *start_node = ust_workflow_t_find(&workflows, (workflow_t){.name = CharSlice99_from_str("in")});
+    ust_workflow_t_node *start_node = ust_workflow_t_find(&workflows, (workflow_t){.name = "in"});
 
-    CharSlice99 accepted = CharSlice99_from_str("A"), rejected = CharSlice99_from_str("R");
+    char *accepted = "A";
+    char *rejected = "R";
 
     pos++;
     while (pos < buf_size) {
@@ -134,18 +146,22 @@ void solve(char *buf, size_t buf_size, Solution *result) {
 
             workflow_t *current = &start_node->key;
             while (1) {
-                CharSlice99 next = *workflow_next(current, data);
-                log_debug("%.*s -> %.*s", current->name.len, current->name.ptr, next.len, next.ptr);
-                if (CharSlice99_primitive_eq(next, accepted)) {
+                char *next = workflow_next(current, data);
+                log_debug("%s -> %s", current->name, next);
+                if (strcmp(next, accepted) == 0) {
                     part1 += data.x + data.a + data.m + data.s;
                     break;
-                } else if (CharSlice99_primitive_eq(next, rejected)) {
+                } else if (strcmp(next, rejected) == 0) {
                     break;
                 }
-                current = &ust_workflow_t_find(&workflows, (workflow_t){.name = next})->key;
+                workflow_t item;
+                strncpy(item.name, next, sizeof(item.name));
+                current = &ust_workflow_t_find(&workflows, item)->key;
             }
         }
     }
+
+    // part 2
 
     aoc_itoa(part1, result->part1, 10);
     aoc_itoa(part2, result->part2, 10);
