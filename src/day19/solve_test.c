@@ -32,7 +32,7 @@ hdj{m>838:A,pv}\n\
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("19114", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    ASSERT_STR("167409079868000", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
@@ -40,7 +40,7 @@ CTEST(day19, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("391132", solution.part1);
-    ASSERT_STR("0", solution.part2);
+    // ASSERT_STR("0", solution.part2);
 }
 #endif
 

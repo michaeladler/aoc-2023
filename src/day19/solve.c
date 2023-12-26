@@ -59,8 +59,8 @@ typedef struct {
 } graph_t;
 
 typedef struct {
-    int lower; // inclusive
-    int upper; // inclusive
+    int a; // inclusive
+    int b; // inclusive
 } interval_t;
 
 typedef struct {
@@ -95,64 +95,149 @@ static inline CharSlice99 *workflow_next(workflow_t *wf, data_t data) {
     return NULL;
 }
 
+#define LOWER 1
+#define UPPER 4000
+
 static inline void interval_apply_rule(interval_t *interval, rule_t *rule) {
     if (rule->kind == LT) {
-        interval->upper = MIN(rule->value - 1, interval->upper); // interval.upper < rule->value
+        interval->b = rule->value - 1; // interval.upper < rule->value
     } else if (rule->kind == GT) {
-        interval->lower = MAX(rule->value + 1, interval->lower); // interval.lower > rule->value
+        interval->a = rule->value + 1; // interval.lower > rule->value
     }
 }
 
 static inline void interval_negate_rule(interval_t *interval, rule_t *rule) {
     if (rule->kind == LT) {
-        interval->upper = MAX(rule->value, interval->upper); // interval.upper >= rule->value
+        interval->a = rule->value; // interval.lower >= rule->value
     } else if (rule->kind == GT) {
-        interval->lower = MIN(rule->value, interval->lower); // interval.lower <= rule->value
+        interval->b = rule->value; // interval.upper <= rule->value
     }
 }
 
-static inline constraint_t constraint_apply_rule(constraint_t constraint, rule_t *r) {
-    constraint_t result = constraint;
-    switch (r->variable) {
-    case 'x': interval_apply_rule(&result.x, r); break;
-    case 'm': interval_apply_rule(&result.m, r); break;
-    case 'a': interval_apply_rule(&result.a, r); break;
-    case 's': interval_apply_rule(&result.s, r); break;
+static inline char kind_to_char(rule_kind_e kind) {
+    switch (kind) {
+    case LT: return '<';
+    case GT: return '>';
+    case JUMP: return 'J';
     }
+}
+
+static inline i64 interval_cardinality(interval_t interval) {
+    if (interval.b < interval.a) return 0;
+    return interval.b - interval.a + 1;
+}
+
+static inline i64 constraint_cardinality(constraint_t c) {
+    return interval_cardinality(c.x) * interval_cardinality(c.m) * interval_cardinality(c.a) *
+           interval_cardinality(c.s);
+}
+
+static inline constraint_t constraint_apply_rule(constraint_t constraint, rule_t *rule) {
+    if (rule->kind != JUMP) {
+        log_debug("applying rule: %c %c %d to jump to %.*s", rule->variable, kind_to_char(rule->kind), rule->value,
+                  rule->destination.len, rule->destination.ptr);
+    }
+    constraint_t result = constraint;
+    switch (rule->variable) {
+    case 'x': interval_apply_rule(&result.x, rule); break;
+    case 'm': interval_apply_rule(&result.m, rule); break;
+    case 'a': interval_apply_rule(&result.a, rule); break;
+    case 's': interval_apply_rule(&result.s, rule); break;
+    }
+    log_debug("constraints: %d<=x<=%d, %d<=m<=%d, %d<=a<=%d, %d<=s<=%d", result.x.a, result.x.b, result.m.a, result.m.b,
+              result.a.a, result.a.b, result.s.a, result.s.b);
     return result;
 }
 
-static inline constraint_t constraint_negate_rule(constraint_t constraint, rule_t *r) {
-    constraint_t result = constraint;
-    switch (r->variable) {
-    case 'x': interval_negate_rule(&result.x, r); break;
-    case 'm': interval_negate_rule(&result.m, r); break;
-    case 'a': interval_negate_rule(&result.a, r); break;
-    case 's': interval_negate_rule(&result.s, r); break;
+static inline constraint_t constraint_negate_rule(constraint_t constraint, rule_t *rule) {
+    if (rule->kind != JUMP) {
+        log_debug("negating rule: %c %c %d to jump to %.*s", rule->variable, kind_to_char(rule->kind), rule->value,
+                  rule->destination.len, rule->destination.ptr);
     }
+    constraint_t result = constraint;
+    switch (rule->variable) {
+    case 'x': interval_negate_rule(&result.x, rule); break;
+    case 'm': interval_negate_rule(&result.m, rule); break;
+    case 'a': interval_negate_rule(&result.a, rule); break;
+    case 's': interval_negate_rule(&result.s, rule); break;
+    }
+    log_debug("constraints: %d<=x<=%d, %d<=m<=%d, %d<=a<=%d, %d<=s<=%d", result.x.a, result.x.b, result.m.a, result.m.b,
+              result.a.a, result.a.b, result.s.a, result.s.b);
     return result;
 }
 
-static void find_all_paths(graph_t *graph, int current, int destination, bool visited[], int path[], int *path_idx,
-                           ust_workflow_t *workflows, CharSlice99 *id_to_name) {
+static inline bool constraint_is_valid(constraint_t c) {
+    return c.x.a <= c.x.b && c.m.a <= c.m.b && c.a.a <= c.a.b && c.s.a <= c.s.b;
+}
+
+static inline i64 process_path(int path[], int path_len, ust_workflow_t *workflows, CharSlice99 *id_to_name,
+                               constraint_t initial) {
+    log_debug(">> found new path to destination:");
+    CharSlice99 from = id_to_name[path[0]];
+    constraint_t all_constraints[2][128];
+    int all_constraints_count[2] = {1, 0};
+    all_constraints[0][0] = initial;
+    int idx_active = 0;
+    for (int i = 1; i < path_len; i++) {
+
+        int count_other = 0;
+        int idx_other = 1 - idx_active;
+
+        workflow_t *wf = &ust_workflow_t_find(workflows, (workflow_t){.name = from})->key;
+        CharSlice99 to = id_to_name[path[i]];
+        log_debug("looking for rules %.*s -> %.*s", from.len, from.ptr, to.len, to.ptr);
+        for (int j = 0; j < all_constraints_count[idx_active]; j++) {
+            constraint_t c = all_constraints[idx_active][j];
+            for (int k = 0; k < wf->rule_count; k++) {
+                rule_t *rule = &wf->rule[k];
+                if (CharSlice99_primitive_eq(rule->destination, to)) {
+                    constraint_t new_c = constraint_apply_rule(c, rule);
+                    if (constraint_is_valid(new_c)) { all_constraints[idx_other][count_other++] = new_c; }
+                } else {
+                    constraint_t new_c = constraint_negate_rule(c, rule);
+                    if (!constraint_is_valid(new_c)) { break; }
+                    c = new_c;
+                }
+            }
+        }
+        all_constraints_count[idx_other] = count_other;
+        idx_active = idx_other;
+        from = to;
+    }
+
+    i64 total = 0;
+    log_debug(">> final result:");
+    for (int i = 0; i < all_constraints_count[idx_active]; i++) {
+        constraint_t c = all_constraints[idx_active][i];
+        total += constraint_cardinality(c);
+        log_debug("accepted: x: [%d, %d], m: [%d, %d], a: [%d, %d], s: [%d, %d]", c.x.a, c.x.b, c.m.a, c.m.b, c.a.a,
+                  c.a.b, c.s.a, c.s.b);
+    }
+    log_debug(">> total: %ld", total);
+    return total;
+}
+
+static i64 find_all_paths(graph_t *graph, int current, int destination, bool visited[], int path[], int *path_idx,
+                          ust_workflow_t *workflows, CharSlice99 *id_to_name) {
+
+    i64 total = 0;
+
     // mark the current node and store it in path[]
     visited[current] = true;
     path[*path_idx] = current;
     *path_idx = *path_idx + 1;
 
     if (current == destination) {
-        log_debug(">> found new path to destination:");
-        for (int i = 0; i < *path_idx; i++) {
-            int id = path[i];
-            CharSlice99 name = id_to_name[id];
-            log_debug("%.*s", name.len, name.ptr);
-        }
+        interval_t initial = {.a = LOWER, .b = UPPER};
+        constraint_t constraint = {.x = initial, .m = initial, .a = initial, .s = initial};
+        total += process_path(path, *path_idx, workflows, id_to_name, constraint);
     } else {
         adj_list_t *lst = &graph->adj[current];
         for (int i = 0; i < lst->neighbor_count; i++) {
             int neighbor_id = lst->neighbor[i];
             if (!visited[neighbor_id]) {
-                find_all_paths(graph, neighbor_id, destination, visited, path, path_idx, workflows, id_to_name);
+                total +=
+                    find_all_paths(graph, neighbor_id, destination, visited, path, path_idx, workflows, id_to_name);
             }
         }
     }
@@ -161,10 +246,12 @@ static void find_all_paths(graph_t *graph, int current, int destination, bool vi
     // unvisited
     *path_idx = *path_idx - 1;
     visited[current] = false;
+
+    return total;
 }
 
 void solve(char *buf, size_t buf_size, Solution *result) {
-    int part1 = 0, part2 = 0;
+    int part1 = 0;
     size_t pos = 0;
 
     _cleanup_(ust_workflow_t_free) ust_workflow_t workflows = ust_workflow_t_init(workflow_t_hash, workflow_t_equal);
@@ -183,7 +270,6 @@ void solve(char *buf, size_t buf_size, Solution *result) {
         wf.name = CharSlice99_new(&buf[start], pos - start);
 
         ust_name_id_t_insert(&name_to_id, (name_id_t){.id = id_count, .name = wf.name});
-        log_debug("id_count: %d", id_count);
         id_to_name[id_count++] = wf.name;
 
         pos++;
@@ -248,12 +334,9 @@ void solve(char *buf, size_t buf_size, Solution *result) {
                 if (buf[pos] == '}') break;
                 pos++;
             }
-            log_debug(">> input: x=%d, m=%d, a=%d, s=%d", data.x, data.m, data.a, data.s);
-
             workflow_t *current = &start_node->key;
             while (1) {
                 CharSlice99 next = *workflow_next(current, data);
-                log_debug("%.*s -> %.*s", current->name.len, current->name.ptr, next.len, next.ptr);
                 if (CharSlice99_primitive_eq(next, accepted)) {
                     part1 += data.x + data.a + data.m + data.s;
                     break;
@@ -287,10 +370,10 @@ void solve(char *buf, size_t buf_size, Solution *result) {
     bool visited[MAX_NODES];
     for (size_t i = 0; i < sizeof(visited); i++) visited[i] = false;
     int path[MAX_NODES], path_idx = 0;
-    find_all_paths(&graph, start_id, dest_id, visited, path, &path_idx, &workflows, id_to_name);
+    i64 part2 = find_all_paths(&graph, start_id, dest_id, visited, path, &path_idx, &workflows, id_to_name);
 
-    aoc_itoa(part1, result->part1, 10);
-    aoc_itoa(part2, result->part2, 10);
+    snprintf(result->part1, sizeof(result->part1), "%d", part1);
+    snprintf(result->part2, sizeof(result->part2), "%ld", part2);
 }
 
 int solve_input(const char *fname, Solution *result) {
