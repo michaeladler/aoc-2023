@@ -40,7 +40,7 @@ CTEST(day19, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("391132", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("128163929109524", solution.part2);
 }
 #endif
 
