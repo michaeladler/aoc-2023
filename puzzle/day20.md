@@ -9,11 +9,10 @@ Modules communicate using pulses. Each pulse is either a high pulse or a low pul
 
 There are several different types of modules:
 
-Flip-flop modules (prefix %) are either on or off; they are initially off. If a flip-flop module receives a high pulse, it is ignored and nothing happens. However, if a flip-flop module receives a low pulse, it flips between on and off. If it was off, it turns on and sends
-a high pulse. If it was on, it turns off and sends a low pulse.
+Flip-flop modules (prefix %) are either on or off; they are initially off. If a flip-flop module receives a high pulse, it is ignored and nothing happens. However, if a flip-flop module receives a low pulse, it flips between on and off. If it was off, it turns on and sends a high pulse. If it was on, it turns off and sends a low pulse.
 
-Conjunction modules (prefix &) remember the type of the most recent pulse received from each of their connected input modules; they initially default to remembering a low pulse for each input. When a pulse is received, the conjunction module first updates its memory for
-that input. Then, if it remembers high pulses for all inputs, it sends a low pulse; otherwise, it sends a high pulse.
+Conjunction modules (prefix &) remember the type of the most recent pulse received from each of their connected input modules; they initially default to remembering a low pulse for each input. When a pulse is received, the conjunction module first updates its memory for that input. Then, if it remembers high pulses for all inputs, it sends a low pulse; otherwise,
+it sends a high pulse.
 
 There is a single broadcast module (named broadcaster). When it receives a pulse, it sends the same pulse to all of its destination modules.
 
@@ -31,8 +30,8 @@ broadcaster -> a, b, c
 %c -> inv
 &inv -> a
 
-In this module configuration, the broadcaster has three destination modules named a, b, and c. Each of these modules is a flip-flop module (as indicated by the % prefix). a outputs to b which outputs to c which outputs to another module named inv. inv is a conjunction
-module (as indicated by the & prefix) which, because it has only one input, acts like an inverter (it sends the opposite of the pulse type it receives); it outputs to a.
+In this module configuration, the broadcaster has three destination modules named a, b, and c. Each of these modules is a flip-flop module (as indicated by the % prefix). a outputs to b which outputs to c which outputs to another module named inv. inv is a conjunction module (as indicated by the & prefix) which, because it has only one input, acts like an
+inverter (it sends the opposite of the pulse type it receives); it outputs to a.
 
 By pushing the button once, the following pulses are sent:
 
@@ -59,8 +58,7 @@ broadcaster -> a
 %b -> con
 &con -> output
 
-This module configuration includes the broadcaster, two flip-flops (named a and b), a single-input conjunction module (inv), a multi-input conjunction module (con), and an untyped module named output (for testing purposes). The multi-input conjunction module con watches the
-two flip-flop modules and, if they're both on, sends a low pulse to the output module.
+This module configuration includes the broadcaster, two flip-flops (named a and b), a single-input conjunction module (inv), a multi-input conjunction module (con), and an untyped module named output (for testing purposes). The multi-input conjunction module con watches the two flip-flop modules and, if they're both on, sends a low pulse to the output module.
 
 Here's what happens if you push the button once:
 
@@ -95,8 +93,7 @@ con -low-> output
 b -low-> con
 con -high-> output
 
-This time, flip-flop a turns on, then flip-flop b turns off. However, before b can turn off, the pulse sent to con is handled first, so it briefly remembers all high pulses for its inputs and sends a low pulse to output. After that, flip-flop b turns off, which causes con
-to update its state and send a high pulse to output.
+This time, flip-flop a turns on, then flip-flop b turns off. However, before b can turn off, the pulse sent to con is handled first, so it briefly remembers all high pulses for its inputs and sends a low pulse to output. After that, flip-flop b turns off, which causes con to update its state and send a high pulse to output.
 
 Finally, with a on and b off, push the button a fourth time:
 
@@ -115,12 +112,9 @@ In the first example, the same thing happens every time the button is pushed: 8 
 
 In the second example, after pushing the button 1000 times, 4250 low pulses and 2750 high pulses are sent. Multiplying these together gives 11687500.
 
-Consult your module configuration; determine the number of low pulses and high pulses that would be sent after pushing the button 1000 times, waiting for all pulses to be fully handled after each push of the button. What do you get if you multiply the total number of low
-pulses sent by the total number of high pulses sent?
+Consult your module configuration; determine the number of low pulses and high pulses that would be sent after pushing the button 1000 times, waiting for all pulses to be fully handled after each push of the button. What do you get if you multiply the total number of low pulses sent by the total number of high pulses sent?
 
 Your puzzle answer was 929810733.
-
-The first half of this puzzle is complete! It provides one gold star: *
 
 --- Part Two ---
 
@@ -128,9 +122,13 @@ The final machine responsible for moving the sand down to Island Island has a mo
 
 Reset all modules to their default states. Waiting for all pulses to be fully handled after each button press, what is the fewest number of button presses required to deliver a single low pulse to the module named rx?
 
-Answer:
+Your puzzle answer was 231657829136023.
 
-Although it hasn't changed, you can still get your puzzle input.
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.
 
 You can also [Shareon Twitter Mastodon] this puzzle.
 

@@ -20,7 +20,6 @@ CTEST(day20, example1) {
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("32000000", solution.part1);
-    // ASSERT_STR("0", solution.part2);
 }
 
 CTEST(day20, example2) {
@@ -32,7 +31,6 @@ CTEST(day20, example2) {
     Solution solution;
     solve(buf, strlen(buf), &solution);
     ASSERT_STR("11687500", solution.part1);
-    // ASSERT_STR("0", solution.part2);
 }
 
 #ifdef HAVE_INPUTS
@@ -40,7 +38,7 @@ CTEST(day20, real) {
     Solution solution;
     solve_input("input/" DAY ".txt", &solution);
     ASSERT_STR("929810733", solution.part1);
-    // ASSERT_STR("0", solution.part2);
+    ASSERT_STR("231657829136023", solution.part2);
 }
 #endif
 
