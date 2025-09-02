@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: sudo apt-get update && sudo apt-get install -y meson ninja-build libxxhash-dev pkg-config
       - run: meson setup build --buildtype debugoptimized -Db_sanitize=address -Db_lundef=false
       - run: ninja -C build test
